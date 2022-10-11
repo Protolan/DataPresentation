@@ -15,17 +15,16 @@ public class List implements IList<Position> {
 
     @Override
     public void insert(AddressData d, Position p) {
-        // Если единственный элемент в списке
-        if (head == tail) {
-            if (head == null) {
+        if (head == tail) { // Случай с единственным элементом
+            if (head == null) { // Если список был пустой, создаем голову и хвост
                 head = new Node(d);
                 tail = head;
                 return;
             }
 
-            head.Next = new Node(head.Data);
-            head.Data = d;
-            tail = head.Next;
+            head.Next = new Node(head.Data); // Создаем следущий элемент после головы
+            head.Data = d; // Обновляем данные головы
+            tail = head.Next; //
             tail.Prev = head;
 
             return;

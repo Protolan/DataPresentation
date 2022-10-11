@@ -28,7 +28,7 @@ public class List implements IList<Position> {
 
 
         if (p.x == -1){
-            //inserting into empty list
+            // Вставка в пустой список
             if (head == -1){
                 head = space.x;
                 space.x = mem[space.x].Next;
@@ -36,7 +36,7 @@ public class List implements IList<Position> {
                 return;
             }
 
-            //inserting into last element
+            // Вставка в последний элемент
             int temp = space.x;
             space.x = mem[space.x].Next;
             int pos = getLast();
@@ -46,27 +46,40 @@ public class List implements IList<Position> {
         }
 
 
-        //inserting into head
-        if (p.x == head){
-            int tempSpace = space.x;
-            space.x = mem[space.x].Next;
-
-            mem[tempSpace].setNode(mem[head].Data, mem[head].Next);
-            mem[head].setNode(d, tempSpace);
-            return;
+        if(p.x != head) {
+            int temp = getPrevious(p);
+            if (temp == -1) return;
+            mem[temp].Next = space.x;
         }
 
-        //all others situations
-        int temp = getPrevious(p);
-        if (temp == -1) return;
-
-        int myElement = mem[temp].Next;
         int tempSpace = space.x;
-
-        mem[tempSpace] = new Node(d);
-        mem[temp].Next = tempSpace;
-        mem[tempSpace].Next = myElement;
         space.x = mem[space.x].Next;
+
+        mem[tempSpace].setNode(mem[p.x].Data, mem[p.x].Next);
+        mem[p.x].setNode(d, tempSpace);
+
+
+//        //inserting into head
+//        if (p.x == head){
+//            int tempSpace = space.x;
+//            space.x = mem[space.x].Next;
+//
+//            mem[tempSpace].setNode(mem[head].Data, mem[head].Next);
+//            mem[head].setNode(d, tempSpace);
+//            return;
+//        }
+//
+//        //all others situations
+//        int temp = getPrevious(p);
+//        if (temp == -1) return;
+//
+//        int myElement = mem[temp].Next;
+//        int tempSpace = space.x;
+//
+//        mem[tempSpace] = new Node(d);
+//        mem[temp].Next = tempSpace;
+//        mem[tempSpace].Next = myElement;
+//        space.x = mem[space.x].Next;
 
     }
 
