@@ -1,4 +1,4 @@
-package MapATD.LinkedList;
+package MapATD.ListATD;
 
 import MapATD.IMap;
 

@@ -1,23 +1,21 @@
-package StackATD.ATD;
+package QueueATD.ListATD;
 
 import Data.AddressData;
-import StackATD.Interface.IStack;
+import QueueATD.IQueue;
 
-public class Stack implements IStack {
-
-
+public class Queue implements IQueue {
     @Override
-    public void push(AddressData d) {
+    public void enqueue(AddressData data) {
 
     }
 
     @Override
-    public AddressData pop() {
+    public AddressData dequeue() {
         return null;
     }
 
     @Override
-    public AddressData top() {
+    public AddressData front() {
         return null;
     }
 

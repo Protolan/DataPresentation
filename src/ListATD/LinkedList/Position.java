@@ -1,4 +1,4 @@
-package DoublyLinkListPresentation;
+package ListATD.LinkedList;
 
 public class Position {
     public Node node;

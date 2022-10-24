@@ -1,7 +1,7 @@
-package CursorPresentation;
+package ListATD.Cursor;
 
 import Exceptions.WrongPositionException;
-import Interface.IList;
+import ListATD.Interface.IList;
 import Data.AddressData;
 
 public class List implements IList<Position> {
@@ -76,7 +76,7 @@ public class List implements IList<Position> {
 //        int myElement = mem[temp].Next;
 //        int tempSpace = space.x;
 //
-//        mem[tempSpace] = new CursorPresentation.DoublyLinkListPresentation.LinkedListPresentation.Node(d);
+//        mem[tempSpace] = new ListATD.CursorPresentation.ListATD.DoublyLinkListPresentation.ListATD.LinkedListPresentation.Node(d);
 //        mem[temp].Next = tempSpace;
 //        mem[tempSpace].Next = myElement;
 //        space.x = mem[space.x].Next;

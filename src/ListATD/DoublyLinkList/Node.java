@@ -1,4 +1,4 @@
-package DoublyLinkListPresentation;
+package ListATD.DoublyLinkList;
 
 import Data.AddressData;
 

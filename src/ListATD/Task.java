@@ -1,6 +1,8 @@
-import ArrayPresentation.Position;
+package ListATD;
+
 import Data.AddressData;
-import CursorPresentation.List;
+import ListATD.Cursor.Position;
+import ListATD.Cursor.List;
 
 public class Task {
     public static void main(String[] args) {

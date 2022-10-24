@@ -1,7 +1,6 @@
-package Interface;
+package ListATD.Interface;
 
 import Data.AddressData;
-import Exceptions.WrongPositionException;
 
 public interface IList<T> {
     void insert(AddressData x, T p);

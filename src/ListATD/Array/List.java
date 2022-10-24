@@ -1,6 +1,6 @@
-package ArrayPresentation;
+package ListATD.Array;
 
-import Interface.IList;
+import ListATD.Interface.IList;
 import Data.AddressData;
 import Exceptions.WrongPositionException;
 
@@ -40,7 +40,7 @@ public class List implements IList<Position> {
     @Override
     public AddressData retrieve(Position p) {
         if(OutOfRange(p) || ElementNotExist(p)) {
-            throw new WrongPositionException("ArrayPresentation.DoublyLinkListPresentation.LinkedListPresentation.Position: " + p +
+            throw new WrongPositionException("ListATD.ArrayPresentation.ListATD.DoublyLinkListPresentation.ListATD.LinkedListPresentation.Position: " + p +
                     " out of possible positions: " + _end);
         }
         return _array[p.value];
@@ -59,7 +59,7 @@ public class List implements IList<Position> {
     @Override
     public Position next(Position p) {
         if (OutOfRange(p) || ElementNotExist(p)) {
-            throw new WrongPositionException("ArrayPresentation.DoublyLinkListPresentation.LinkedListPresentation.Position: " + p +
+            throw new WrongPositionException("ListATD.ArrayPresentation.ListATD.DoublyLinkListPresentation.ListATD.LinkedListPresentation.Position: " + p +
                     " out of possible positions: " + _end);
         }
         return (new Position(p.value + 1));

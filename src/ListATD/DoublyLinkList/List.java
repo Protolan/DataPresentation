@@ -1,8 +1,8 @@
-package DoublyLinkListPresentation;
+package ListATD.DoublyLinkList;
 
 import Data.AddressData;
 import Exceptions.WrongPositionException;
-import Interface.IList;
+import ListATD.Interface.IList;
 
 public class List implements IList<Position> {
     private Node head;
