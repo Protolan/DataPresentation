@@ -1,6 +1,5 @@
 package LinkedListPresentation;
 
-
 import Data.AddressData;
 
 public class Node {

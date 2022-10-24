@@ -1,6 +1,5 @@
 package DoublyLinkListPresentation;
 
-
 public class Position {
     public Node node;
     public Position(Node d){

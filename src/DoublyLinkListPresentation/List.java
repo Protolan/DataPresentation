@@ -2,7 +2,7 @@ package DoublyLinkListPresentation;
 
 import Data.AddressData;
 import Exceptions.WrongPositionException;
-import List.IList;
+import Interface.IList;
 
 public class List implements IList<Position> {
     private Node head;

@@ -1,6 +1,6 @@
 package LinkedListPresentation;
 
-import List.IList;
+import Interface.IList;
 import Data.AddressData;
 import Exceptions.WrongPositionException;
 

@@ -1,6 +1,6 @@
+import ArrayPresentation.Position;
 import Data.AddressData;
 import CursorPresentation.List;
-import CursorPresentation.Position;
 
 public class Task {
     public static void main(String[] args) {
