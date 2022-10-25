@@ -1,6 +1,5 @@
 package MapATD.ListATD;
 
-import Data.AddressData;
 import MapATD.IMap;
 
 public class Map<T1, T2> implements IMap<T1, T2> {
