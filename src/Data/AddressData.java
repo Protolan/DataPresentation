@@ -18,6 +18,9 @@ public class AddressData {
     public AddressData(String name, String address) {
         Construct(name.toCharArray(), address.toCharArray());
     }
+    public AddressData(char[] name, char[] address) {
+        Construct(name, address);
+    }
 
     private void Construct(char[] name, char[] address) {
         for (int i = 0; i < name.length; i++) {

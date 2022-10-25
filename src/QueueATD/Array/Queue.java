@@ -46,7 +46,8 @@ public class Queue implements IQueue {
 
     @Override
     public void makeNull() {
-
+        _rear = _length - 1;
+        _front = 0;
     }
 
     private int next(int from) {return (from + 1) % _length;}

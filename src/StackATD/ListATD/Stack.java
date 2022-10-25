@@ -34,9 +34,7 @@ public class Stack implements IStack {
     }
 
     @Override
-    public boolean empty() {
-        return _list.first() == null;
-    }
+    public boolean empty() {return _list.first().equals(_list.end()); }
 
     @Override
     public void makeNull() {
