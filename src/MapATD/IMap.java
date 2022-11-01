@@ -1,8 +1,8 @@
 package MapATD;
 
-public interface IMap<T1, T2> {
+public interface IMap {
     void makeNull();
-    void assign(T1 d, T2 r);
-    boolean compute(T1 d, T2 r);
+    void assign(char[] d, char[] r);
+    boolean compute(char[] d, char[] r);
 
 }

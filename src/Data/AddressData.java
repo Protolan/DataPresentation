@@ -2,18 +2,11 @@ package Data;
 
 public class AddressData {
 
-    private final char[] _name = new char[20];
-    private final char[] _address = new char[50];
+    private char[] _name = new char[20];
+    private char[] _address = new char[50];
 
     private int _nameLastIndex;
     private int _addressLastIndex;
-
-    public int getNameLength() {
-        return _nameLastIndex;
-    }
-    public int getAddressLength() {
-        return _addressLastIndex;
-    }
 
     public AddressData(String name, String address) {
         Construct(name.toCharArray(), address.toCharArray());
@@ -22,32 +15,22 @@ public class AddressData {
         Construct(name, address);
     }
 
-    private void Construct(char[] name, char[] address) {
-        for (int i = 0; i < name.length; i++) {
-            this._name[i] = name[i];
-        }
-        for (int i = 0; i < address.length; i++) {
-            this._address[i] = address[i];
-        }
-        _nameLastIndex = name.length;
-        _addressLastIndex = address.length;
+
+    public int getNameLength() {
+        return _nameLastIndex;
+    }
+    public int getAddressLength() {
+        return _addressLastIndex;
     }
 
-    public void printData() {
-        System.out.print("Name: ");
-        for (char c : _name) {
-            if (c != 0) {
-                System.out.print(c);
-            }
-        }
+    public char[] getName() {return  _name;}
 
-        System.out.print(" | Address: ");
-        for (char c : _address) {
-            if (c != 0) {
-                System.out.print(c);
-            }
-        }
-        System.out.println();
+    public char[] getAddress() {return _address;}
+
+    public void setAddress(char[] address) {
+        _address = new char[50];
+        for (int i = 0; i < address.length; i++)
+            _address[i] = address[i];
     }
 
     @Override
@@ -70,6 +53,36 @@ public class AddressData {
 
         return true;
     }
+    public void printData() {
+        System.out.print("Name: ");
+        for (char c : _name) {
+            if (c != 0) {
+                System.out.print(c);
+            }
+        }
+
+        System.out.print(" | Address: ");
+        for (char c : _address) {
+            if (c != 0) {
+                System.out.print(c);
+            }
+        }
+        System.out.println();
+    }
+
+
+    private void Construct(char[] name, char[] address) {
+        for (int i = 0; i < name.length; i++) {
+            this._name[i] = name[i];
+        }
+        for (int i = 0; i < address.length; i++) {
+            this._address[i] = address[i];
+        }
+        _nameLastIndex = name.length;
+        _addressLastIndex = address.length;
+    }
+
+
 
 
 
