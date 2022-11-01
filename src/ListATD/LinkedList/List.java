@@ -5,18 +5,18 @@ import Data.AddressData;
 import Exceptions.WrongPositionException;
 
 public class List implements IList<Position> {
-    private Node head;
+    private Node _head;
 
     public List() {
-        head = null;
+        _head = null;
     }
 
     @Override
     public void insert(AddressData d, Position p) {
         // Если лист пустой новый элемент = голова
-        if (head == null) {
+        if (_head == null) {
             if (p.node == null) {
-                head = new Node(d);
+                _head = new Node(d);
             }
             return;
         }
@@ -31,7 +31,7 @@ public class List implements IList<Position> {
 
         // Остальные случаи
         Position previous = new Position(getPrevious(p));
-        if (p.node != head && previous.node == null)
+        if (p.node != _head && previous.node == null)
             return;
 
         Node temp = p.node.Next;
@@ -49,11 +49,11 @@ public class List implements IList<Position> {
     }
 
     @Override
-    public AddressData retrieve(Position p) throws WrongPositionException {
+    public AddressData retrieve(Position p)  {
         if (p == null) throw new WrongPositionException("no such position in this List");
 
-        if (p.node == head) {
-            return head.AddressData;
+        if (p.node == _head) {
+            return _head.AddressData;
         }
 
         Node temp = getPrevious(p);
@@ -63,11 +63,11 @@ public class List implements IList<Position> {
 
     @Override
     public void delete(Position p) {
-        if (p == null || head == null) return;
+        if (p == null || _head == null) return;
 
         //deleting head
-        if (p.node == head) {
-            head = head.Next;
+        if (p.node == _head) {
+            _head = _head.Next;
             return;
         }
 
@@ -80,10 +80,10 @@ public class List implements IList<Position> {
     }
 
     @Override
-    public Position next(Position p) throws WrongPositionException {
+    public Position next(Position p)  {
         if (p == null) throw new WrongPositionException("No such position in the list");
 
-        if (p.node == head) return new Position(head.Next);
+        if (p.node == _head) return new Position(_head.Next);
 
         Node temp = getPrevious(p);
         if (temp == null) throw new WrongPositionException("No such position in the list");
@@ -91,8 +91,8 @@ public class List implements IList<Position> {
     }
 
     @Override
-    public Position previous(Position p) throws WrongPositionException {
-        if (p == null || p.node == head) throw new WrongPositionException("No such position in the list");
+    public Position previous(Position p)  {
+        if (p == null || p.node == _head) throw new WrongPositionException("No such position in the list");
 
         Node result = getPrevious(p);
         if (result != null) return new Position(result);
@@ -101,21 +101,21 @@ public class List implements IList<Position> {
 
     @Override
     public Position first() {
-        return new Position(head);
+        return new Position(_head);
     }
 
     @Override
     public void makeNull() {
-        head = null;
+        _head = null;
     }
 
     @Override
     public void printList() {
-        if (head == null || head.AddressData == null) {
+        if (_head == null || _head.AddressData == null) {
             System.out.println("The List is empty");
             return;
         }
-        Node p = head;
+        Node p = _head;
         int i = 1;
         while (p != null) {
             System.out.print((i) + ") ");
@@ -126,9 +126,14 @@ public class List implements IList<Position> {
         System.out.println();
     }
 
+    @Override
+    public Position end() {
+        return new Position(null);
+    }
+
     private Node getPrevious(Position p) {
-        Node q = head.Next;
-        Node q2 = head;
+        Node q = _head.Next;
+        Node q2 = _head;
 
         while (q != null) {
             if (p.node == q) {
@@ -141,7 +146,7 @@ public class List implements IList<Position> {
     }
 
     private Node getLast() {
-        Node q = head;
+        Node q = _head;
         Node q2 = null;
         while (q != null) {
             q2 = q;
@@ -151,7 +156,7 @@ public class List implements IList<Position> {
     }
 
     private Node search(AddressData x) {
-        Node q = head;
+        Node q = _head;
         while (q != null) {
             if (q.AddressData.equals(x))
                 return q;
@@ -161,9 +166,6 @@ public class List implements IList<Position> {
     }
 
 
-    @Override
-    public Position end() {
-        return new Position(null);
-    }
+
 }
 

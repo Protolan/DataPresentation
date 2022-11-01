@@ -5,17 +5,17 @@ import ListATD.Interface.IList;
 import Data.AddressData;
 
 public class List implements IList<Position> {
-    private static final Node[] mem;
-    private static final Position space;
+    private static final Node[] _mem;
+    private static final Position _space;
     private int head;
 
     static {
-        mem = new Node[50];
-        space = new Position(0);
-        for (int i = 0; i < mem.length - 1; i++){
-            mem[i] = new Node(i + 1);
+        _mem = new Node[50];
+        _space = new Position(0);
+        for (int i = 0; i < _mem.length - 1; i++){
+            _mem[i] = new Node(i + 1);
         }
-        mem[mem.length - 1] = new Node(-1);
+        _mem[_mem.length - 1] = new Node(-1);
     }
 
     public List(){
@@ -24,24 +24,24 @@ public class List implements IList<Position> {
 
     @Override
     public void insert(AddressData d, Position p) {
-        if (space.x == -1) return;
+        if (_space.x == -1) return;
 
 
         if (p.x == -1){
             // Вставка в пустой список
             if (head == -1){
-                head = space.x;
-                space.x = mem[space.x].Next;
-                mem[head].setNode(d, -1);
+                head = _space.x;
+                _space.x = _mem[_space.x].Next;
+                _mem[head].setNode(d, -1);
                 return;
             }
 
             // Вставка в последний элемент
-            int temp = space.x;
-            space.x = mem[space.x].Next;
+            int temp = _space.x;
+            _space.x = _mem[_space.x].Next;
             int pos = getLast();
-            mem[pos].Next = temp;
-            mem[temp].setNode(d, -1);
+            _mem[pos].Next = temp;
+            _mem[temp].setNode(d, -1);
             return;
         }
 
@@ -49,14 +49,14 @@ public class List implements IList<Position> {
         if(p.x != head) {
             int temp = getPrevious(p);
             if (temp == -1) return;
-            mem[temp].Next = space.x;
+            _mem[temp].Next = _space.x;
         }
 
-        int tempSpace = space.x;
-        space.x = mem[space.x].Next;
+        int tempSpace = _space.x;
+        _space.x = _mem[_space.x].Next;
 
-        mem[tempSpace].setNode(mem[p.x].Data, mem[p.x].Next);
-        mem[p.x].setNode(d, tempSpace);
+        _mem[tempSpace].setNode(_mem[p.x].Data, _mem[p.x].Next);
+        _mem[p.x].setNode(d, tempSpace);
 
 
 //        //inserting into head
@@ -91,15 +91,15 @@ public class List implements IList<Position> {
 
     @Override
     public AddressData retrieve(Position p)  {
-        if (p.x < 0 || p.x > mem.length) throw new WrongPositionException("incorrect index");
-        if (p.x == head) return mem[head].Data;
+        if (p.x < 0 || p.x > _mem.length) throw new WrongPositionException("incorrect index");
+        if (p.x == head) return _mem[head].Data;
 
         int temp = getPrevious(p);
         if (temp == -1) throw new WrongPositionException("incorrect index");
-        temp = mem[temp].Next;
+        temp = _mem[temp].Next;
         if (temp == -1) throw new WrongPositionException("incorrect index");
 
-        return mem[temp].Data;
+        return _mem[temp].Data;
     }
 
     @Override
@@ -107,43 +107,43 @@ public class List implements IList<Position> {
         if (head == -1) return;
 
         if (p.x == head){
-            space.x = head;
-            mem[space.x].Next = space.x;
-            head = mem[head].Next;
+            _space.x = head;
+            _mem[_space.x].Next = _space.x;
+            head = _mem[head].Next;
             p.x = head;
             return;
         }
 
         int temp = getPrevious(p);
         if (temp == -1) return;
-        int next = mem[temp].Next;
+        int next = _mem[temp].Next;
         if (next == -1) return;
-        mem[temp].Next = mem[next].Next;
-        mem[next].Next = space.x;
-        space.x = next;
-        p.x = mem[temp].Next;
+        _mem[temp].Next = _mem[next].Next;
+        _mem[next].Next = _space.x;
+        _space.x = next;
+        p.x = _mem[temp].Next;
     }
 
     @Override
     public Position next(Position p) {
-        if (p.x > mem.length) throw new WrongPositionException("incorrect index");
+        if (p.x > _mem.length) throw new WrongPositionException("incorrect index");
 
         //next (head)
-        if (p.x == head) return new Position(mem[head].Next);
+        if (p.x == head) return new Position(_mem[head].Next);
 
 
         int temp = getPrevious(p);
         if (temp == -1) throw new WrongPositionException("incorrect index");
-        temp = mem[temp].Next;
+        temp = _mem[temp].Next;
         if (temp == -1) throw new WrongPositionException("incorrect index");
 
 
-        return new Position(mem[temp].Next);
+        return new Position(_mem[temp].Next);
     }
 
     @Override
     public Position previous(Position p)  {
-        if (p.x > mem.length || p.x == head) throw new WrongPositionException("incorrect index");
+        if (p.x > _mem.length || p.x == head) throw new WrongPositionException("incorrect index");
 
         int temp = getPrevious(p);
         if (temp == -1) throw new WrongPositionException("incorrect index");
@@ -158,14 +158,14 @@ public class List implements IList<Position> {
     @Override
     public void makeNull() {
         if (head == -1) return;
-        mem[getLast()].Next =(space.x);
-        space.x = head;
+        _mem[getLast()].Next =(_space.x);
+        _space.x = head;
         head = -1;
     }
 
     @Override
     public void printList() {
-        if (head == -1 || mem[head].Data == null){
+        if (head == -1 || _mem[head].Data == null){
             System.out.println("The List is empty");
             return;
         }
@@ -173,11 +173,11 @@ public class List implements IList<Position> {
         int i = 1;
         while (true){
             System.out.print((i) + ") ");
-            mem[q].Data.printData();
-            if (mem[q].Next == -1){
+            _mem[q].Data.printData();
+            if (_mem[q].Next == -1){
                 return;
             }
-            q = mem[q].Next;
+            q = _mem[q].Next;
             i++;
         }
     }
@@ -196,7 +196,7 @@ public class List implements IList<Position> {
                 return q2;
             }
             q2 = q;
-            q = mem[q].Next;
+            q = _mem[q].Next;
         }
         return -1;
     }
@@ -207,7 +207,7 @@ public class List implements IList<Position> {
 
         while (q != -1){
             q2 = q;
-            q = mem[q].Next;
+            q = _mem[q].Next;
         }
         return q2;
     }
@@ -216,10 +216,10 @@ public class List implements IList<Position> {
         int q = head;
 
         while (q != -1){
-            if (mem[q].Data.equals(x)) {
+            if (_mem[q].Data.equals(x)) {
                 return new Position(q);
             }
-            q = mem[q].Next;
+            q = _mem[q].Next;
         }
         return new Position(-1);
     }

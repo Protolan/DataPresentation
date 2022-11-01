@@ -20,6 +20,7 @@ public class List implements IList<Position> {
         if (IsFull() || OutOfRange(p))
             return;
 
+        // Сдвигаем все вправо начиная от позицию куда необходимо вставить элемент
         for (int i = _end; i > p.value; i--) {
             _array[i] = _array[i - 1];
         }
@@ -51,6 +52,7 @@ public class List implements IList<Position> {
         if (OutOfRange(p) || ElementNotExist(p))
             return;
 
+        // просто сдвигаем все влево, перекрывая удаляемы элемент
         for (int i = p.value; i < _end; i++)
             _array[i] = _array[i + 1];
         _end -= 1;
