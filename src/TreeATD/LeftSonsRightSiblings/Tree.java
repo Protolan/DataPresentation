@@ -20,7 +20,7 @@ public class Tree implements ITree {
     }
 
     @Override
-    public Label label() {
+    public Label label(int n) {
         return null;
     }
 
@@ -35,7 +35,7 @@ public class Tree implements ITree {
     }
 
     @Override
-    public ITree crate(Label label, ITree tree1, ITree tree2) {
+    public ITree create(Label label, ITree tree1, ITree tree2) {
         return null;
     }
 
