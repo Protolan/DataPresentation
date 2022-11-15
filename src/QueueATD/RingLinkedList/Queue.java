@@ -30,11 +30,12 @@ public class Queue implements IQueue {
         }
         // Остальные случаи
         _tail.next = new Node(data, _tail.next);
+        _tail = _tail.next;
     }
 
     @Override
     public AddressData dequeue() {
-        AddressData data = _tail.data;
+        AddressData data = _tail.next.data;
 
         //Когда в очереди единственный элемент
         if (_tail.next == _tail) {
@@ -43,7 +44,7 @@ public class Queue implements IQueue {
         }
 
         //Остальные случаи
-        _tail = _tail.next;
+        _tail.next = _tail.next.next;
         return data;
     }
 

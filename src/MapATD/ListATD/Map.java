@@ -44,6 +44,9 @@ public class Map implements IMap {
         _list.retrieve(position).setAddress(r);
         return true;
     }
+    public void print(){
+        _list.printList();
+    }
 
     private Position findByKey(char[] key) {
 

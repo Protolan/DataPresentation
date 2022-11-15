@@ -1,7 +1,7 @@
 package StackATD.ListATD;
 
 import Data.AddressData;
-import ListATD.Array.List;
+import ListATD.LinkedList.List;
 import StackATD.Interface.IStack;
 
 public class Stack implements IStack {
@@ -12,7 +12,7 @@ public class Stack implements IStack {
 
     @Override
     public void push(AddressData d) {
-        _list = new List();
+        _list.insert(d,_list.first());
     }
 
     @Override
