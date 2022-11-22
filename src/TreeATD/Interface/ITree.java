@@ -7,7 +7,6 @@ public interface ITree {
     Label label(int n);
     ITree create(Label label);
     ITree create(Label label, ITree tree1);
-    ITree create(Label label, ITree tree1, ITree tree2);
     int root();
     void makeNull();
 }

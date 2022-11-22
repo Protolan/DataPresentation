@@ -1,5 +1,13 @@
 package TreeATD.Interface;
 
 public class Label {
-    char[] value;
+    public char value;
+
+    public void print() {
+        System.out.println(value);
+    }
+
+    public Label(char value) {
+        this.value = value;
+    }
 }

@@ -58,6 +58,7 @@ public class Tree implements ITree {
     @Override
     public int leftMostChild(int n) {
         if (_array[n].next == null) throw new TreeException("Leave has no children");
+        // Если нет в дереве
         if(!isInTree(n)) return LAMBDA;
         return _array[n].next.name;
     }
@@ -76,14 +77,12 @@ public class Tree implements ITree {
 
     @Override
     public Label label(int n) {
-        if(n == _root) return _array[n].label;
         if(isInTree(n)) return _array[n].label;
         else throw new TreeException("No such element in tree");
     }
 
     @Override
     public ITree create(Label label) {
-        //Если не осталось памяти
         if(_space == LAMBDA) throw new TreeException("No free memory");
         //Если дерево пустое, инициализируем корневой узел
         if(_root != LAMBDA) {
@@ -112,11 +111,6 @@ public class Tree implements ITree {
     }
 
     @Override
-    public ITree create(Label label, ITree tree1, ITree tree2) {
-        return null;
-    }
-
-    @Override
     public int root() {
         return _root;
     }
@@ -128,6 +122,7 @@ public class Tree implements ITree {
         clearTree(_root);
         _array[_root].name = _space;
         _space = _root;
+        _root = LAMBDA;
     }
 
     //Находит родителя узла, использует прямой обход
@@ -167,10 +162,38 @@ public class Tree implements ITree {
             //Обнуление
             _array[current.name].name = _space;
             _space = current.name;
+            ///Переход к следущему
             current = current.next;
 
         }
     }
+
+
+
+
+    // PRINT
+
+    public void print(){
+        System.out.println();
+        if (_root == LAMBDA) return;
+        System.out.println(_root);
+        printByPass(_root);
+        System.out.println();
+    }
+
+    private void printByPass(int r){
+        Node current = _array[r].next;
+
+        while (current != null){
+            System.out.println(current.name);
+            if (_array[current.name].next != null) {
+                printByPass(current.name);
+            }
+            current = current.next;
+        }
+    }
+
+    //
 
 
 }
