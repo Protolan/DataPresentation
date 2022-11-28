@@ -59,7 +59,7 @@ public class Tree implements ITree {
     public int leftMostChild(int n) {
         if (_array[n].next == null) throw new TreeException("Leave has no children");
         // Если нет в дереве
-        if(!isInTree(n)) return LAMBDA;
+        if(n == _root || findParent(n, _root) != LAMBDA) return LAMBDA;
         return _array[n].next.name;
     }
 
@@ -77,7 +77,7 @@ public class Tree implements ITree {
 
     @Override
     public Label label(int n) {
-        if(isInTree(n)) return _array[n].label;
+        if(n == _root || findParent(n, _root) != LAMBDA) return _array[n].label;
         else throw new TreeException("No such element in tree");
     }
 
@@ -140,13 +140,6 @@ public class Tree implements ITree {
         return LAMBDA;
     }
 
-    //Есть ли такой элемент в дереве
-    private boolean isInTree(int n) {
-        if(n == _root) return true;
-        if(findParent(n, _root) == LAMBDA)
-            return false;
-        return true;
-    }
 
     //Обнуляет дерево, использует обратный обход
     private void clearTree(int from){

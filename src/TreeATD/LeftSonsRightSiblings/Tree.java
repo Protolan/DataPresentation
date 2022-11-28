@@ -43,20 +43,25 @@ public class Tree implements ITree {
 
     @Override
     public int leftMostChild(int n) {
-        if(isInTree(n)) return _array[n].leftSon;
-        return LAMBDA;
+        if(_root == LAMBDA || _array[_root].leftSon == LAMBDA) return LAMBDA;
+        if(_array[_root].leftSon == n) return _root;
+        int parent = findParent(n, _root);
+        if(parent == LAMBDA) return LAMBDA;
+        return _array[parent].leftSon;
     }
 
     @Override
     public int rightSibling(int n) {
-        if (n == _root) throw new TreeException("Root has no siblings");
-        if(isInTree(n)) return _array[n].rightSibling;
-        return LAMBDA;
+        if(_root == LAMBDA || _array[_root].rightSibling == LAMBDA) return LAMBDA;
+        if(_array[_root].rightSibling == n) return _root;
+        int parent = findParent(n, _root);
+        if(parent == LAMBDA) return LAMBDA;
+        return _array[parent].rightSibling;
     }
 
     @Override
     public Label label(int n) {
-        if(isInTree(n)) return _array[n].label;
+        if(n == _root || findParent(n, _root) != LAMBDA) return _array[n].label;
         else throw new TreeException("No such element in tree");
     }
 
@@ -115,14 +120,6 @@ public class Tree implements ITree {
             current = _array[current].rightSibling;
         }
         return LAMBDA;
-    }
-
-    //Есть ли такой элемент в дереве
-    private boolean isInTree(int n) {
-        if(n == _root) return true;
-        if(findParent(n, _root) == LAMBDA)
-            return false;
-        return true;
     }
 
     //Обнуляет дерево, использует обратный обход
