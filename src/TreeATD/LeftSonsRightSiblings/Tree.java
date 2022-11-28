@@ -18,7 +18,7 @@ public class Tree implements ITree {
         }
     }
 
-    private static Node[] _array;
+    private static final Node[] _array;
     private static int _space;
     private static final int LEN = 10;
     private final static int LAMBDA = -1;
@@ -37,7 +37,7 @@ public class Tree implements ITree {
 
     @Override
     public int parent(int n) {
-        if(n == _root || n == LAMBDA || n > LEN) throw new TreeException("Incorrect index");
+        if(n == _root || n == LAMBDA || n > LEN) return LAMBDA;
         return findParent(n, _root);
     }
 

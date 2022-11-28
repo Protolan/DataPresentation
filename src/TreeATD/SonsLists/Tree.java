@@ -51,21 +51,20 @@ public class Tree implements ITree {
 
     @Override
     public int parent(int n) {
-        if(n == _root || n == LAMBDA || n > LEN) throw new TreeException("Incorrect index");
+        if(n == _root || n == LAMBDA || n > LEN) return LAMBDA;
         return findParent(n, _root);
     }
 
     @Override
     public int leftMostChild(int n) {
-        if (_array[n].next == null) throw new TreeException("Leave has no children");
         // Если нет в дереве
-        if(n == _root || findParent(n, _root) != LAMBDA) return LAMBDA;
+        if(_array[n].next == null || n == _root || findParent(n, _root) != LAMBDA) return LAMBDA;
         return _array[n].next.name;
     }
 
     @Override
     public int rightSibling(int n) {
-        if (n == _root) throw new TreeException("Root has no siblings");
+        if (n == _root) return LAMBDA;
         // Проверка, находится ли он в дереве
         int parent = findParent(n, _root);
         if(parent == LAMBDA) return LAMBDA;
@@ -160,8 +159,6 @@ public class Tree implements ITree {
 
         }
     }
-
-
 
 
     // PRINT
