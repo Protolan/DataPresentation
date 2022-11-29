@@ -1,6 +1,6 @@
 package TreeATD.LeftSonsRightSiblings;
 
-import Exceptions.TreeException;
+import TreeATD.TreeException;
 import TreeATD.Interface.ITree;
 import TreeATD.Interface.Label;
 
