@@ -83,8 +83,8 @@ public class Tree implements ITree {
         if(_space == LAMBDA) throw new TreeException("No free memory");
         // Если базовое дерево пустое
         if (_root == LAMBDA) return tree1.create(label);
-        // Если добавляемое дерево пустое, добавляем метку
-        if(tree1.root() == LAMBDA) return create(label);
+        // Если добавляемое дерево пустое, добавляем метку или Если добавляемое это же дерево возрвашаем наше дерево
+        if(tree1.root() == LAMBDA || tree1 == this) return create(label);
         _array[_space].label = label;
         _array[_space].leftSon = _root;
         _array[_root].rightSibling = tree1.root();

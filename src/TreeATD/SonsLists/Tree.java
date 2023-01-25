@@ -9,9 +9,10 @@ public class Tree implements ITree {
     //------------------------------------------------------------------------------------------------//
     private static class ArrayNode {
         private int name;
-        private Node next;
+        private Node node;
         private Label label;
         public ArrayNode(int n){
+            label = new Label(' ');
             name = n;
         }
     }
@@ -58,8 +59,8 @@ public class Tree implements ITree {
     @Override
     public int leftMostChild(int n) {
         // Если нет в дереве
-        if(_array[n].next == null || n == _root || findParent(n, _root) != LAMBDA) return LAMBDA;
-        return _array[n].next.name;
+        if(_array[n].node == null || n == _root || findParent(n, _root) != LAMBDA) return LAMBDA;
+        return _array[n].node.name;
     }
 
     @Override
@@ -69,8 +70,8 @@ public class Tree implements ITree {
         int parent = findParent(n, _root);
         if(parent == LAMBDA) return LAMBDA;
         //Если у родителя больше двух детей
-        if(_array[parent].next != null && _array[parent].next.next != null)
-            return _array[parent].next.next.name;
+        if(_array[parent].node != null && _array[parent].node.next != null)
+            return _array[parent].node.next.name;
         return LAMBDA;
     }
 
@@ -85,7 +86,7 @@ public class Tree implements ITree {
         if(_space == LAMBDA) throw new TreeException("No free memory");
         //Если дерево пустое, инициализируем корневой узел
         if(_root != LAMBDA) {
-            _array[_space].next = new Node(_root,null);
+            _array[_space].node = new Node(_root,null);
         }
         _array[_space].label = label;
         _root = _space;
@@ -96,13 +97,14 @@ public class Tree implements ITree {
     @Override
     public ITree create(Label label, ITree tree1) {
         if(_space == LAMBDA) throw new TreeException("No free memory");
-        // Если базовое дерево пустое
+        if(tree1 == this) return create(label);
+        // Если исходное дерево пустое
         if(_root == LAMBDA) return tree1.create(label);
         // Если добавляемое дерево пустое, добавляем метку
         if(tree1.root() == LAMBDA) return create(label);
 
         _array[_space].label = label;
-        _array[_space].next = new Node(_root, new Node(tree1.root(), null));
+        _array[_space].node = new Node(_root, new Node(tree1.root(), null));
         _root = _space;
         _space = _array[_space].name;
 
@@ -126,7 +128,7 @@ public class Tree implements ITree {
 
     //Находит родителя узла, использует прямой обход
     private int findParent(int of, int in){
-        Node current = _array[in].next;
+        Node current = _array[in].node;
 
         while (current != null){
             if (current.name == of) return in;
@@ -142,12 +144,12 @@ public class Tree implements ITree {
 
     //Обнуляет дерево, использует обратный обход
     private void clearTree(int from){
-        Node current = _array[from].next;
+        Node current = _array[from].node;
 
         while (current != null){
 
             //Доходи до листа
-            if (_array[current.name].next != null) {
+            if (_array[current.name].node != null) {
                 clearTree(current.name);
             }
 
@@ -163,27 +165,36 @@ public class Tree implements ITree {
 
     // PRINT
 
-    public void print(){
-        System.out.println();
-        if (_root == LAMBDA) return;
-        System.out.println(_root);
-        printByPass(_root);
-        System.out.println();
+    public static void print(){
+        int a, b;
+        for (int i = 0; i < LEN; i++) {
+            if ((int) _array[i].label.value == 0) {
+                System.out.print("[" + _array[i].name + "] *");
+            } else {
+                System.out.print("[" + _array[i].name + "] " + _array[i].label.value);
+            }
+            if (_array[i].node != null) {
+                a = _array[i].node.name + 1;
+                System.out.print(" -> [" + a + "]");
+                if (_array[i].node.next != null) {
+                    b = _array[i].node.next.name + 1;
+                    System.out.print(" -> [" + b + "]");
+                }
+            }
+            System.out.println();
+        }
     }
 
     private void printByPass(int r){
-        Node current = _array[r].next;
+        Node current = _array[r].node;
 
         while (current != null){
             System.out.println(current.name);
-            if (_array[current.name].next != null) {
+            if (_array[current.name].node != null) {
                 printByPass(current.name);
             }
             current = current.next;
         }
     }
-
-    //
-
 
 }
