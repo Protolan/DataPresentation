@@ -15,6 +15,7 @@ public class Tree implements ITree {
             name = n;
             rightSibling = sib;
             leftSon = son;
+            label = new Label(' ');
         }
     }
 
@@ -143,11 +144,20 @@ public class Tree implements ITree {
 
     // PRINT
 
-    public void print(){
-        System.out.println();
-        if (_root == LAMBDA) return;
-        System.out.println(_root);
-        printByPass(_root);
+    public static void print() {
+        System.out.printf("%2s  %5s  %s  %n","LS", "Label", "RS");
+        for (int i = 0; i < LEN - 1; i++) {
+            System.out.printf("%2d |%3c  | %2d %n",
+                    _array[i].leftSon,
+                    _array[i].label.value,
+                    _array[i].rightSibling
+            );
+        }
+        System.out.printf("%2d |%3s  | %2d %n",
+                _array[LEN - 1].leftSon,
+                _array[LEN - 1].label.value,
+                _array[LEN - 1].rightSibling
+        );
         System.out.println();
     }
 

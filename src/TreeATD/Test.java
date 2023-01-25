@@ -1,7 +1,7 @@
 package TreeATD;
 
 import TreeATD.Interface.Label;
-import TreeATD.SonsLists.Tree;
+import TreeATD.LeftSonsRightSiblings.Tree;
 
 public class Test {
      private static final int LAMBDA = -1;
