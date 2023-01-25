@@ -59,7 +59,7 @@ public class Tree implements ITree {
     @Override
     public int leftMostChild(int n) {
         // Если нет в дереве
-        if(_array[n].node == null || n == _root || findParent(n, _root) != LAMBDA) return LAMBDA;
+        if(_array[n].node == null || findParent(n, _root) != LAMBDA) return LAMBDA;
         return _array[n].node.name;
     }
 
@@ -185,16 +185,23 @@ public class Tree implements ITree {
         }
     }
 
-    private void printByPass(int r){
-        Node current = _array[r].node;
-
-        while (current != null){
-            System.out.println(current.name);
-            if (_array[current.name].node != null) {
-                printByPass(current.name);
-            }
-            current = current.next;
+    public void inorder(int index) {
+        if(_array[index].node == null) {
+            System.out.print(_array[index].label.value+ " ");
         }
+        else {
+            inorder(_array[index].node.name);
+            System.out.print(_array[index].label.value + " ");
+            Node child = _array[index].node.next;
+            while(child != null) {
+                inorder(child.name);
+                child = child.next;
+            }
+        }
+
     }
+
+
+
 
 }

@@ -47,7 +47,10 @@ public class Tree implements ITree {
         if(_root == LAMBDA || _array[_root].leftSon == LAMBDA) return LAMBDA;
         if(_array[_root].leftSon == n) return _root;
         int parent = findParent(n, _root);
-        if(parent == LAMBDA) return LAMBDA;
+        if(parent == LAMBDA) {
+            System.out.println("parentNotFound");
+            return LAMBDA;
+        }
         return _array[parent].leftSon;
     }
 
@@ -123,6 +126,25 @@ public class Tree implements ITree {
         return LAMBDA;
     }
 
+//    private int findParent(int leaf, int child) {
+//        if (is_child(child, leaf)) {
+//            return leaf;
+//        }
+//        if (_array[leaf].leftSon != -1) {
+//            int temp = findParent(_array[leaf].leftSon, child);
+//            if (temp != LAMBDA) {
+//                return temp;
+//            }
+//            if (_array[_array[leaf].leftSon].rightSibling != -1) {
+//                temp = findParent(_array[_array[leaf].leftSon].rightSibling, child);
+//                if (temp != LAMBDA) {
+//                    return temp;
+//                }
+//            }
+//        }
+//        return LAMBDA;
+//    }
+
     //Обнуляет дерево, использует обратный обход
     private void clearTree(int from){
         int current = _array[from].leftSon;
@@ -161,16 +183,19 @@ public class Tree implements ITree {
         System.out.println();
     }
 
-    private void printByPass(int r){
-        int current = _array[r].leftSon;
-
-        while (current != LAMBDA){
-            System.out.println(current);
-            if (_array[current].leftSon != LAMBDA) {
-                printByPass(current);
-            }
-            current = _array[current].rightSibling;
+    public void inorder(int index) {
+        if(index == LAMBDA) return;
+        if(_array[index].leftSon == LAMBDA) {
+            System.out.print(_array[index].label.value + " ");
         }
+        else {
+            inorder(_array[index].leftSon);
+            System.out.print(_array[index].label.value + " ");
+            inorder(_array[_array[index].leftSon].rightSibling);
+
+        }
+
+
     }
 
     //

@@ -1,10 +1,11 @@
 package TreeATD;
 
 import TreeATD.Interface.Label;
-import TreeATD.LeftSonsRightSiblings.Tree;
+import TreeATD.SonsLists.Tree;
 
 public class Test {
-     private static final int LAMBDA = -1;
+    private static final int LAMBDA = -1;
+
     public static void main(String[] args) {
         Tree t1 = new Tree();
         t1.create(new Label('a'));
@@ -17,20 +18,22 @@ public class Test {
     }
 
     //Симетричный обход бинарного дерева
-    private static void printInOrderTraversalBinary(Tree tree, int from){
+    private static void printInOrderTraversalBinary(Tree tree, int from) {
         if (from == LAMBDA) return;
         int leftChild = tree.leftMostChild(from);
         printInOrderTraversalBinary(tree, leftChild);
-        System.out.println(from + " ");
+        System.out.println(tree.label(from).value + " ");
         printInOrderTraversalBinary(tree, tree.rightSibling(leftChild));
     }
 
+
+
     //Симетричный обход произвольного дерева
-    private static void printInOrderTraversal(Tree tree, int from){
+    private static void printInOrderTraversal(Tree tree, int from) {
         if (from == LAMBDA) return;
         int child = tree.leftMostChild(from);
         // Идем до предпоследнего ребенка
-        if(child != LAMBDA) {
+        if (child != LAMBDA) {
             int rightSibling = tree.rightSibling(child);
             while (rightSibling != LAMBDA) {
                 printInOrderTraversal(tree, child);
