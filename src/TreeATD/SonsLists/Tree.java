@@ -130,9 +130,8 @@ public class Tree implements ITree {
     private int findParent(int of, int in){
         Node current = _array[in].node;
 
-        while (current != null){
+        while (current != null) {
             if (current.name == of) return in;
-
             int nextParent = findParent(of, current.name);
             if (nextParent == LAMBDA)
                 current = current.next;
@@ -162,9 +161,7 @@ public class Tree implements ITree {
         }
     }
 
-
     // PRINT
-
     public static void print(){
         int a, b;
         for (int i = 0; i < LEN; i++) {
