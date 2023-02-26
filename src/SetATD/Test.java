@@ -9,19 +9,23 @@ public class Test {
         set1.insert(-35);
         set1.insert(-38);
         set1.insert(-20);
-        set1.Print();
-        SetPlan set2 = new SetPlan(-35, 0);
+        set1.print();
+        SetPlan set2 = new SetPlan(-200, 0);
         set2.insert(-20);
         set2.insert(-22);
         set2.insert(-1);
         System.out.println(set2.member(-3));
-        System.out.println(set2.member(-1));
-        System.out.println(set2.member(-22));
-        set2.Print();
+        set2.print();
         System.out.println(set2.min());
-        System.out.println(set1.min());
+        System.out.println(set1.max());
         System.out.println();
-        var unSet = set1.difference(set2);
-        unSet.Print();
+        var difference = set1.difference(set2);
+        var union = set1.union(set2);
+        var intersection = set1.intersection(set2);
+        difference.print();
+        union.print();
+        intersection.print();
+        set1.assign(set2);
+        set1.print();
     }
 }
