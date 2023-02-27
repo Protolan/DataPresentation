@@ -1,16 +1,16 @@
 package SetATD;
 
-import SetATD.Array.SetPlan;
+import SetATD.Array.Set;
 
 public interface ISet {
     // Возвращает множество в которым есть все неповторяющиеся элементы из двух множеств
-    SetPlan union(SetPlan set);
+    Set union(Set set);
     // Возвращает множество которое содержит общие элементы из двух множеств
-    SetPlan intersection(SetPlan set);
+    Set intersection(Set set);
     // Возвращает множество которое содержит элементы которых нет в исходном множестве
-    SetPlan difference(SetPlan set);
+    Set difference(Set set);
     // Возвращает множество которое состоит из двух множеств, может быть выполнены если множество не имеют общих элементов
-    SetPlan merge(SetPlan set);
+    Set merge(Set set);
     // Проверяет содержит ли это множество значение
     boolean member(int x);
     // Добавляет значение в множество, если его там нет и оно попадает в диапазон множества
@@ -18,14 +18,14 @@ public interface ISet {
     // Удаляет значение из множества, если оно там есть, если нет ничего не делать
     void delete(int x);
     // Присваивает новое множество
-    void assign(SetPlan set);
+    void assign(Set set);
     // Возвращает минимальный элемент
     int min();
     // Возвращает максимальный элемент
     int max();
     // Возвращает true если множества равны
-    boolean equal(SetPlan set);
+    boolean equal(Set set);
     // Возвращает множество в котором найден элемент
-    SetPlan find(SetPlan a, int x);
+    Set find(Set a, int x);
     void makeNull();
 }
