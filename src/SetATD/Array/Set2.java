@@ -19,6 +19,7 @@ public class Set2 {
 
         public int index;
         public int bit;
+
     }
 
     private Range _range; // границы
@@ -29,14 +30,24 @@ public class Set2 {
         _range = new Range(x, y);
         _array = createRangeArray(_range);
     }
+    // Конструктор с диапазоном и длиной массива, нужен что бы не вычиислять количество элементов массива
+    private Set2(Range range, int arrayLength) {
+        _range = range;
+        _array = new int[arrayLength];
+    }
 
 
     //Получает общий диапазон
     // Создает диапазон с максимальной левой и максимальной правой границы
     private Range getUniteRange(Range first, Range second) {
-        int x = first.start < second.start ? first.start : second.start;
-        int y = first.end > second.end ? first.end : second.end;
+        int x = Math.min(first.start, second.start);
+        int y = Math.max(first.end, second.end);
         return new Range(x, y);
+    }
+
+    //Проверяет пересекаются ли диапазоны
+    private boolean rangeNotInter(Range first, Range second) {
+        return first.end < second.start || second.end < first.start;
     }
 
     // Создает массив из диапазона
@@ -44,27 +55,23 @@ public class Set2 {
         int len;
         // Если диапазон положительный
         if (range.start >= 0) {
-            System.out.println("Диапазон положительный");
             int add = range.start % 32 >= range.end % 32 ? 1 : 0;
             len = (range.end - range.start) / 32 + 1 + add;
         }
         // Если диапазон отрицательный
         else if (range.end < 0) {
-            System.out.println("Диапазон отрицательный");
             int add = (Math.abs(range.start) - 1) % 32 <= (Math.abs(range.end) - 1) % 32 ? 1 : 0;
             len = (range.end - range.start) / 32 + 1 + add;
         }
         // Если диапазон двусторонний
         else {
-            System.out.println("Диапазон двусторонний");
             len = -(range.start + 1) / 32 + range.end / 32 + 2;
         }
-        System.out.println("Дина: " + len);
         return new int[len];
     }
 
     private Position findInArray(int value) {
-        if (value < 0) {;
+        if (value < 0) {
             return new Position(-(_range.start - value) / 32, 31 - ((Math.abs(value) - 1) % 32));
         } else {
             var add = _range.start < 0 ? (-(_range.start + 1)) / 32 + 1 : 0;
@@ -72,127 +79,96 @@ public class Set2 {
         }
     }
 
-    private void copySet(Set2 from, Set2 to) {
-        Position startPosition = to.findInArray(from._range.start);
-        System.out.println("Начинаем с " + startPosition.index);
-        for (int i = 0; i < from._array.length; i++) {
-            to._array[startPosition.index + i] = from._array[i];
+    private int findIndex(int value) {
+        if (value < 0) {
+            return -(_range.start - value) / 32;
+        } else {
+            var add = _range.start < 0 ? (-(_range.start + 1)) / 32 + 1 : 0;
+            return value / 32 + add;
         }
-    }
-
-    private boolean haveCommonElements(Set2 Set21, Set2 Set22) {
-        if (Set21._range.end < Set22._range.start || Set22._range.end < Set21._range.start) return false;
-        Range unionRange = getUniteRange(Set21._range, Set22._range);
-        int bitOffSet21 = (Set21._range.start - unionRange.start) % 32;
-        int bitOffSet22 = (Set22._range.start - unionRange.start) % 32;
-        return false;
     }
 
 
     // Возвращает множество в которым есть все неповторяющиеся элементы из двух множеств
     public Set2 union(Set2 set) {
         if (set == this) return this;
+        System.out.println("Union Start");
         Range unionRange = getUniteRange(_range, set._range);
-        Set2 newSet2 = new Set2(unionRange.start, unionRange.end);
-        newSet2.printBinary();
-        copySet(this, newSet2);
-        newSet2.printBinary();
-        Position startPosition = newSet2.findInArray(set._range.start);
-        for (int i = 0; i < set._array.length; i++) {
-            newSet2._array[startPosition.index + i] |= set._array[i];
+        Set2 unionSet = new Set2(unionRange.start, unionRange.end);
+        int startIndex1 = unionSet.findIndex(_range.start);
+        for (int i = 0; i < _array.length; i++) {
+            unionSet._array[startIndex1 + i] = _array[i];
         }
-
-        return newSet2;
+        printBinary();
+        unionSet.printBinary();
+        int startIndex2 = unionSet.findIndex(set._range.start);
+        for (int i = 0; i < set._array.length; i++) {
+            unionSet._array[startIndex2 + i] |= set._array[i];
+        }
+        set.printBinary();
+        unionSet.printBinary();
+        System.out.println("Union End");
+        return unionSet;
     }
 
 
     // Возвращает множество которое содержит общие элементы из двух множеств
-    public Set2 intersection(Set2 Set2) {
-        if (Set2 == this) return this;
-        Range unionRange = getUniteRange(_range, Set2._range);
-        Set2 newSet2 = new Set2(unionRange.start, unionRange.end);
-        if (_range.end < Set2._range.start) return newSet2;
-
-
-        copySet(this, newSet2);
-
-        Position startPosition = newSet2.findInArray(Set2._range.start);
-        System.out.println(startPosition.index);
-        for (int i = 0; i < startPosition.index; i++) {
-            newSet2._array[i] = 0;
+    public Set2 intersection(Set2 set) {
+        // Если этот же сет возвращаем его
+        if (set == this) return this;
+        // Если диапазоны не пересекаются то возвращаем пустое множество с минимальным диапазоном
+        if (rangeNotInter(_range, set._range)) {
+            int len = _range.start - _range.end;
+            int len2 = set._range.start - set._range.end;
+            if (len < len2)
+                return new Set2(new Range(_range.start, _range.end), _array.length);
+            else
+                return new Set2(new Range(set._range.start, set._range.end), set._array.length);
         }
-        for (int i = startPosition.index + Set2._array.length - 1; i < _array.length; i++) {
-            newSet2._array[i] = 0;
-        }
+        // Находи интервал пересечения
+        Range interRange = new Range(Math.max(_range.start, set._range.start), Math.min(_range.end, set._range.end));
+        // Создаем новое множество с этим диапазонм
+        Set2 interSet = new Set2(interRange.start, interRange.end);
 
-        if (startPosition.bit == 0) {
-            for (int i = 0; i < Set2._array.length; i++) {
-                newSet2._array[startPosition.index + i] &= Set2._array[i];
-            }
-        } else {
-            int previous = 0;
-            for (int i = 0; i < Set2._array.length; i++) {
-                newSet2._array[startPosition.index + i] &= (Set2._array[i] >> startPosition.bit) | previous;
-                previous = Set2._array[i] << (32 - startPosition.bit);
-                System.out.println();
-            }
+
+        int startIndex1 = findIndex(interRange.start);
+        int startIndex2 = set.findIndex(interRange.start);
+
+
+        for (int i = 0; i < interSet._array.length; i++) {
+            interSet._array[0] = _array[startIndex1 + i] & set._array[startIndex2 + i];
         }
 
 
-        return newSet2;
+        return interSet;
     }
 
     // Возвращает множество которое содержит элементы которых нет в исходном множестве
-    public Set2 difference(Set2 Set2) {
-        if (Set2 == this) return this;
-        Range unionRange = getUniteRange(_range, Set2._range);
-        Set2 newSet2 = new Set2(unionRange.start, unionRange.end);
+    public Set2 difference(Set2 set) {
+        // Если множества не пересекаются, то возвращаем это же множество
+        if (rangeNotInter(_range, set._range)) return this;
+        // Если это же множество, то возвращаем пустое множество с этим же диапазоном
+        Set2 differenceSet = new Set2(new Range(_range.start, _range.end), _array.length);
+        if (set == this) return differenceSet;
 
-        copySet(this, newSet2);
-
-        Position startPosition2 = newSet2.findInArray(Set2._range.start);
-
-        if (startPosition2.bit == 0) {
-            for (int i = 0; i < Set2._array.length; i++) {
-                newSet2._array[startPosition2.index + i] = (newSet2._array[startPosition2.index + i] & ~Set2._array[i]);
-            }
-        } else {
-            int previous = 0;
-            for (int i = 0; i < Set2._array.length; i++) {
-                newSet2._array[startPosition2.index + i] = (newSet2._array[startPosition2.index + i] & ~((Set2._array[i] >> startPosition2.bit) | previous));
-                previous = Set2._array[i] << (32 - startPosition2.bit);
-                System.out.println();
-            }
+        // Копируем значения первого массива
+        for (int i = 0; i < _array.length; i++) {
+            differenceSet._array[i] = _array[i];
         }
 
+        //Вычисляем индекс массива для выполнение побитовой операции
+        int startIndex = findIndex(set._range.start);
+        int endIndex = Math.min(set._array.length, _array.length);
 
-        return newSet2;
+        for (int i = 0; i < endIndex; i++) {
+            differenceSet._array[startIndex + i] = (_array[startIndex + i] & ~set._array[i]);
+        }
+        return differenceSet;
     }
 
     // Возвращает множество которое состоит из двух множеств, может быть выполнены если множество не имеют общих элементов
-    public Set2 merge(Set2 Set2) {
-        Range unionRange = getUniteRange(_range, Set2._range);
-        Set2 newSet2 = new Set2(unionRange.start, unionRange.end);
-
-        copySet(this, newSet2);
-
-        Position startPosition = newSet2.findInArray(Set2._range.start);
-
-        if (startPosition.bit == 0) {
-            for (int i = 0; i < Set2._array.length; i++) {
-                newSet2._array[startPosition.index + i] |= Set2._array[i];
-            }
-        } else {
-            int previous = 0;
-            for (int i = 0; i < Set2._array.length; i++) {
-                newSet2._array[startPosition.index + i] |= (Set2._array[i] >> startPosition.bit) | previous;
-                previous = Set2._array[i] << (32 - startPosition.bit);
-                System.out.println();
-            }
-        }
-
-
-        return newSet2;
+    public Set2 merge(Set2 set) {
+        return union(set);
     }
 
     // Проверяет содержит ли это множество значение
@@ -217,7 +193,6 @@ public class Set2 {
     // Добавляет значение в множество, если его там нет и оно попадает в диапазон множества
     public void insert(int x) {
         var position = findInArray(x);
-        System.out.println("Вставляем " + x);
         _array[position.index] |= 1 << 31 - position.bit;
     }
 
@@ -233,9 +208,14 @@ public class Set2 {
     }
 
     // Присваивает новое множество
-    public void assign(Set2 Set2) {
-        _range = Set2._range;
-        _array = Set2._array;
+    public void assign(Set2 set) {
+        // Создаем новый диапазон и копируем его
+        _range = new Range(set._range.start, set._range.end);
+        // Создаем новый массив и копируем
+        _array = new int[set._array.length];
+        for (int i = 0; i < _array.length; i++) {
+            set._array[i] = _array[i];
+        }
     }
 
     // Возвращает минимальный элемент
@@ -273,10 +253,10 @@ public class Set2 {
     }
 
     // Возвращает true если множества равны
-    public boolean equal(Set2 Set2) {
-        Range r = getUniteRange(_range, Set2._range);
-        int bitOffSet21 = (_range.start - r.start) % 32;
-        int bitOffSet22 = (Set2._range.start - r.start) % 32;
+    public boolean equal(Set2 set) {
+        if (rangeNotInter(_range, set._range)) {
+            return false;
+        }
 
         return false;
     }
@@ -299,10 +279,15 @@ public class Set2 {
 
     public void printSet() {
         System.out.println();
+        int count = 0;
         for (int i = _range.start; i <= _range.end; i++) {
-            if (isMember(i)) System.out.print(i + " ");
+            if (isMember(i)) {
+                count++;
+                System.out.print(i + " ");
+            }
         }
-
+        if (count == 0) System.out.println("Множество пустое");
+        System.out.println();
     }
 
     public String toBinaryString(int value) {
