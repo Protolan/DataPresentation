@@ -125,9 +125,9 @@ public class Set2 {
     // Возвращает множество которое состоит из двух множеств, может быть выполнены если множество не имеют общих элементов
     public Set2 merge(Set2 set) {
         // Мы не можем соединить одно и тоже множество
-        if (set == this) return null;
+        if (set == this) return this;
         // Мы не может соединить перескающиеся множества
-        if (haveCommonElements(set)) return null;
+        if (haveCommonElements(set)) return this;
         // Вычисляем общий диапазон
         int x = Math.min(_range.start, set._range.start);
         int y = Math.max(_range.end, set._range.end);
@@ -207,7 +207,7 @@ public class Set2 {
     // Возвращает максимальный элемент
     public int max() {
         for (int i = _array.length - 1; i >= 0; i--) {
-            if (i != 0) {
+            if (_array[i] != 0) {
                 int number = _array[i];
                 int bit = 0;
                 while (number % 2 == 0) {
@@ -223,10 +223,19 @@ public class Set2 {
 
     // Возвращает true если множества равны
     public boolean equal(Set2 set) {
-        if (rangeNotInter(_range, set._range)) {
-            return false;
-        }
+        if(rangeNotInter(_range, set._range)) return false;
+        // Находим диапазон пересечения
+        Range interRange = new Range(Math.max(_range.start, set._range.start), Math.min(_range.end, set._range.end));
+        // Вычисляем смещения индексов
+        int startIndex1 = findIndex(interRange.start);
+        int startIndex2 = set.findIndex(interRange.start);
 
+        int rangeLength = getArrayElementCount(interRange);
+
+        // Выполняем побитовое умножение
+        for (int i = 0; i < rangeLength; i++) {
+            if((_array[startIndex1 + i] & set._array[startIndex2 + i]) != 0) return true;
+        }
         return false;
     }
 
@@ -320,7 +329,8 @@ public class Set2 {
     }
 
     private int getNumberFromPosition(int index, int bit) {
-        return 0;
+        int startValue = _range.start < 0 ? -((-_range.start + 31) & ~31) : ((_range.start + 31) & ~31) - 32;
+        return startValue  + 32*index + bit - 1;
     }
 
 
