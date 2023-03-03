@@ -30,6 +30,7 @@ public class Set2 {
         _range = new Range(x, y);
         _array = createRangeArray(_range);
     }
+
     // Конструктор с диапазоном и длиной массива, нужен что бы не вычиислять количество элементов массива
     private Set2(Range range, int arrayLength) {
         _range = range;
@@ -55,36 +56,42 @@ public class Set2 {
         int len;
         // Если диапазон положительный
         if (range.start >= 0) {
-            int add = range.start % 32 >= range.end % 32 ? 1 : 0;
-            len = (range.end - range.start) / 32 + 1 + add;
+            len = range.end / 32 - range.start / 32 + 1;
         }
         // Если диапазон отрицательный
         else if (range.end < 0) {
-            int add = (Math.abs(range.start) - 1) % 32 <= (Math.abs(range.end) - 1) % 32 ? 1 : 0;
-            len = (range.end - range.start) / 32 + 1 + add;
+            len = (range.end + 1) / 32 - (range.start + 1) / 32 + 1;
         }
         // Если диапазон двусторонний
         else {
-            len = -(range.start + 1) / 32 + range.end / 32 + 2;
+            len = range.end / 32 - (range.start + 1) / 32 + 2;
         }
         return new int[len];
     }
 
     private Position findInArray(int value) {
         if (value < 0) {
-            return new Position(-(_range.start - value) / 32, 31 - ((Math.abs(value) - 1) % 32));
+            return new Position((value + 1) / 32 - (_range.start + 1) / 32, 31 - ((-value- 1) % 32));
         } else {
-            var add = _range.start < 0 ? (-(_range.start + 1)) / 32 + 1 : 0;
-            return new Position(value / 32 + add, value % 32);
+            if(_range.start < 0) {
+                return new Position(value / 32 - (_range.start + 1) / 32 + 1, value % 32);
+            }
+            else {
+                return new Position(value / 32 - _range.start / 32, value % 32);
+            }
         }
     }
 
     private int findIndex(int value) {
         if (value < 0) {
-            return -(_range.start - value) / 32;
+            return (value + 1) / 32 - (_range.start + 1) / 32;
         } else {
-            var add = _range.start < 0 ? (-(_range.start + 1)) / 32 + 1 : 0;
-            return value / 32 + add;
+            if(_range.start < 0) {
+                return value / 32 - (_range.start + 1) / 32 + 1;
+            }
+            else {
+                return value / 32 - _range.start / 32;
+            }
         }
     }
 
