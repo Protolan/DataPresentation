@@ -17,6 +17,39 @@ public class Set {
 
     public Set() { _head = null; }
 
+
+    // Присваивает новое множество
+    // Необходимо скопировать ячейки то есть создать новые ноды
+    public void assign(Set set) {
+        // Если множество пустое, то обнуляет список
+        if(set._head == null) {
+           _head = null;
+           return;
+        }
+        Node from = set._head;
+        _head = new Node(set._head.value, null);
+        Node to = _head;
+        while (from.next != null) {
+            to.next = new Node(from.next.value, null);
+            from = from.next;
+            to = to.next;
+        }
+    }
+
+    public boolean equal(Set set) {
+        return false;
+    }
+
+    public Set find(Set set, int value) {
+        if (isMember(value)) return this;
+        else if (set.isMember(value)) return set;
+        else return null;
+    }
+
+    public boolean Member(int value) {
+        return isMember(value);
+    }
+
     // Минимальный элемент это голова
     public int min() {
         // Если список пустой выбросить исключение
@@ -85,6 +118,12 @@ public class Set {
             current = current.next;
         }
         return previous;
+    }
+
+    private boolean isMember(int value) {
+        Node closest = findClosest(value);
+        if(closest == null || closest.value != value) return false;
+        return true;
     }
 
 
