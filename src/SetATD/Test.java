@@ -30,10 +30,8 @@ public class Test {
         set1.find(set2, 35).printSet();
         var union = set1.union(set2);
         var intersection = set1.intersection(set2);
-//        var difference = set1.difference(set2);
         union.printSet();
         intersection.printSet();
-//        difference.printSet();
     }
 
 
