@@ -37,7 +37,13 @@ public class Set {
     }
 
     public boolean equal(Set set) {
-        return false;
+        Node set1Current = _head;
+        Node set2Current = set._head;
+        while (set1Current != null && set2Current != null && set1Current.value == set2Current.value) {
+            set1Current = set1Current.next;
+            set2Current = set2Current.next;
+        }
+        return set1Current == set2Current;
     }
 
     public Set find(Set set, int value) {
