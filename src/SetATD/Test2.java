@@ -18,7 +18,7 @@ public class Test2 {
         set1.print();
         System.out.println(set1.max());
         System.out.println(set2.min());
-        System.out.println(set1.Member(-22));
+        System.out.println(set1.member(-22));
         System.out.println(set1.equal(set2));
     }
 }

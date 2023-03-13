@@ -342,6 +342,7 @@ public class Set {
     }
 
     private int getNumberFromPosition(int index, int bit) {
+        // Находим число которое находится в первой ячейке массива на 0 бите
         int startValue = _range.start < 0 ? -((-_range.start + 31) & ~31) : ((_range.start + 31) & ~31) - 32;
         return startValue  + 32*index + bit - 1;
     }

@@ -17,6 +17,25 @@ public class Set {
 
     public Set() { _head = null; }
 
+    public Set union(Set set) {
+        if(set == this) return set;
+        return null;
+    }
+
+    public Set intersection(Set set) {
+        if(set == this) return set;
+        return null;
+    }
+
+    public Set difference(Set set) {
+        if(set == this) return new Set();
+        return null;
+    }
+
+    public Set merge(Set set) {
+        return null;
+    }
+
 
     // Присваивает новое множество
     // Необходимо скопировать ячейки то есть создать новые ноды
@@ -52,7 +71,7 @@ public class Set {
         else return null;
     }
 
-    public boolean Member(int value) {
+    public boolean member(int value) {
         return isMember(value);
     }
 
