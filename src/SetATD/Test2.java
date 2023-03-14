@@ -1,7 +1,7 @@
 package SetATD;
 
 
-import SetATD.LinkedList.Set;
+import SetATD.RingedLinkedList.Set;
 
 public class Test2 {
     public static void main(String[] args) {
@@ -15,7 +15,6 @@ public class Test2 {
         set2.insert(-22);
         set2.insert(-15);
         set2.print();
-        set1.print();
         System.out.println(set1.max());
         System.out.println(set2.min());
         System.out.println(set1.member(-22));

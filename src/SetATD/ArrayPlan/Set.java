@@ -1,5 +1,6 @@
-package SetATD.Array;
+package SetATD.ArrayPlan;
 
+// Множество на двоичных векторах
 public class Set {
     // Нужен для хранения диапазона
     private class Range {
@@ -50,21 +51,11 @@ public class Set {
         // Если обьединяем это же множество возвращаем его
         if (set == this) return this;
         // Вычисляем общий диапазон
-        int x = Math.min(_range.start, set._range.start);
-        int y = Math.max(_range.end, set._range.end);
         // Создаем пустое множество с общим диапазоном
-        Set unionSet = new Set(x, y);
-        // Находим смещение индексов с первым множеством и копируем значения оттуда значения
-        int startIndex1 = unionSet.findIndex(_range.start);
-        for (int i = 0; i < _array.length; i++) {
-            unionSet._array[startIndex1 + i] = _array[i];
-        }
-        // Находим смещение индексов с вторым множеством и побитово применяем операцию обьединения
-        int startIndex2 = unionSet.findIndex(set._range.start);
-        for (int i = 0; i < set._array.length; i++) {
-            unionSet._array[startIndex2 + i] |= set._array[i];
-        }
-        return unionSet;
+        // Находим смещение индексов c помощью findIndex со первым множеством и копируем значения оттуда значения
+        // Находим смещение индексов  c помощью findIndex со вторым множеством и побитово применяем операцию обьединения
+        // unionSet._array[startIndex2 + i] |= set._array[i];
+        return null;
     }
 
 
@@ -73,53 +64,24 @@ public class Set {
         // При пересечение такого же множество возвращаем его
         if (set == this) return this;
         // Если диапазоны не пересекаются то возвращаем пустое множество с минимальным диапазоном
-        if (rangeNotInter(_range, set._range)) {
-            int len = _range.start - _range.end;
-            int len2 = set._range.start - set._range.end;
-            if (len < len2)
-                return new Set(new Range(_range.start, _range.end), _array.length);
-            else
-                return new Set(new Range(set._range.start, set._range.end), set._array.length);
-        }
         // Находим диапазон пересечения
-        Range interRange = new Range(Math.max(_range.start, set._range.start), Math.min(_range.end, set._range.end));
         // Создаем новое множество с этим диапазоном
-        Set interSet = new Set(interRange.start, interRange.end);
-
-
-        // Вычисляем смещения индексов
-        int startIndex1 = findIndex(interRange.start);
-        int startIndex2 = set.findIndex(interRange.start);
-
-        // Выполняем побитовое умножение
-        for (int i = 0; i < interSet._array.length; i++) {
-            interSet._array[i] = _array[startIndex1 + i] & set._array[startIndex2 + i];
-        }
-        return interSet;
+        // Вычисляем смещение индексов c помощью findIndex
+        // Выполняем побитовое умножение, учитывая смещение индексов
+        // interSet._array[0] = _array[startIndex1 + i] & set._array[startIndex2 + i];
+        return null;
     }
 
     // Возвращает множество которое содержит элементы которых нет в исходном множестве
     public Set difference(Set set) {
         // Если множества не пересекаются, то возвращаем это же множество
-        if (rangeNotInter(_range, set._range)) return this;
         // Если это же множество, то возвращаем пустое множество с этим же диапазоном
-        Set differenceSet = new Set(new Range(_range.start, _range.end), _array.length);
-        if (set == this) return differenceSet;
-
-        // Копируем значения первого массива
-        for (int i = 0; i < _array.length; i++) {
-            differenceSet._array[i] = _array[i];
-        }
-
-        //Вычисляем индекс массива для выполнение побитовой операции
-        int startIndex = findIndex(set._range.start);
-        int endIndex = Math.min(set._array.length, _array.length);
-
+        // Создаем новый массив с таким же диапазоном как исходное множество
+        // Копируем значения первого массива в новый массив
+        // Вычисляем индекс массива для выполнение побитовой операции
         // Находим те биты которых нет во втором множестве
-        for (int i = 0; i < endIndex; i++) {
-            differenceSet._array[startIndex + i] = (_array[startIndex + i] & ~set._array[i]);
-        }
-        return differenceSet;
+        // differenceSet._array[startIndex + i] = (_array[startIndex + i] & ~set._array[i]);
+        return null;
     }
 
     // Возвращает множество которое состоит из двух множеств, может быть выполнены если множество не имеют общих элементов
@@ -127,23 +89,12 @@ public class Set {
         // Мы не можем соединить одно и тоже множество
         if (set == this) return this;
         // Мы не может соединить перескающиеся множества
-        if (haveCommonElements(set)) return this;
         // Вычисляем общий диапазон
-        int x = Math.min(_range.start, set._range.start);
-        int y = Math.max(_range.end, set._range.end);
         // Создаем пустое множество с общим диапазоном
-        Set mergeSet = new Set(x, y);
         // Находим смещение индексов с первым множеством и копируем значения оттуда значения
-        int startIndex1 = mergeSet.findIndex(_range.start);
-        for (int i = 0; i < _array.length; i++) {
-            mergeSet._array[startIndex1 + i] = _array[i];
-        }
         // Находим смещение индексов с вторым множеством и копируем значения оттуда значения
-        int startIndex2 = mergeSet.findIndex(set._range.start);
-        for (int i = 0; i < set._array.length; i++) {
-            mergeSet._array[startIndex2 + i] = set._array[i];
-        }
-        return mergeSet;
+
+        return null;
     }
 
     // Проверяет содержит ли это множество значение
@@ -154,6 +105,7 @@ public class Set {
 
     // Возвращает множество в котором найден элемент
     public Set find(Set a, int x) {
+        // Используем isMember для проверки каждого отдельного множества
         if (isMember(x)) return this;
         else if (a.isMember(x)) return a;
         else return null;
@@ -163,14 +115,19 @@ public class Set {
 
     // Добавляет значение в множество, если его там нет и оно попадает в диапазон множества
     public void insert(int x) {
+        // Используем метод findInArray, чтобы определить индекс и бит числа в массиве
         var position = findInArray(x);
+        // Используем побитовую операцию, чтобы заполнить нужной бит
         _array[position.index] |= 1 << 31 - position.bit;
     }
 
     // Удаляет значение из множества, если оно там есть, если нет ничего не делать
     public void delete(int x) {
+        // Если вне диапазон, то неч
         if (outRange(x)) return;
+        // Используем метод findInArray, чтобы определить индекс и бит числа в массиве
         var position = findInArray(x);
+        // Используем побитовую операцию, чтобы обнулить нужной бит
         _array[position.index] &= ~(1 << 31 - position.bit);
     }
 
@@ -179,81 +136,37 @@ public class Set {
     // Присваивает новое множество
     public void assign(Set set) {
         // Создаем новый диапазон и копируем его
-        _range = new Range(set._range.start, set._range.end);
         // Создаем новый массив и копируем
-        _array = new int[set._array.length];
-        for (int i = 0; i < _array.length; i++) {
-            set._array[i] = _array[i];
-        }
     }
 
     // Возвращает минимальный элемент
     public int min() {
-        for (int i = 0; i < _array.length; i++) {
-            if (_array[i] != 0) {
-                int number = _array[i];
-                int bit = 0;
-                while (number != 1) {
-                    number >>= 1;
-                    bit++;
-                }
-                bit = 32 - bit;
-                return getNumberFromPosition(i, bit);
-            }
-        }
+        // Ищем индекс и бит самого левого единичного бита
+        // Использем метод getNumberFromPosition, чтобы вернуть число
         return 0;
     }
 
     // Возвращает максимальный элемент
     public int max() {
-        for (int i = _array.length - 1; i >= 0; i--) {
-            if (_array[i] != 0) {
-                int number = _array[i];
-                int bit = 0;
-                while (number % 2 == 0) {
-                    number >>= 1;
-                    bit++;
-                }
-                bit = 32 - bit;
-                return getNumberFromPosition(i, bit);
-            }
-        }
+        // Ищем индекс и бит самого правого единичноого бита
+        // Использем метод getNumberFromPosition, чтобы вернуть число
         return 0;
     }
 
     // Возвращает true если множества равны
     public boolean equal(Set set) {
+        // Если диапазоны не перескаются, множества не равны
         if(rangeNotInter(_range, set._range)) return false;
         // Находим диапазон пересечения
-        Range interRange = new Range(Math.max(_range.start, set._range.start), Math.min(_range.end, set._range.end));
         // Вычисляем смещения индексов
-        int startIndex1 = findIndex(interRange.start);
-        int startIndex2 = set.findIndex(interRange.start);
-        int rangeLength = getArrayElementCount(interRange);
-
         // Проверяем на ноль не пересекающиеся промежутки
-        for (int i = 0; i < startIndex1; i++) {
-            if(_array[i] != 0) return false;
-        }
-        for (int i = startIndex1 + rangeLength; i < _array.length; i++) {
-            if(_array[i] != 0) return false;
-        }
-        for (int i = 0; i < startIndex2; i++) {
-            if(set._array[i] != 0) return false;
-        }
-        for (int i = startIndex2 + rangeLength; i < set._array.length; i++) {
-            if(set._array[i] != 0) return false;
-        }
-
         // Проверяем на неравенство на пересекающихся промежутках
-        for (int i = 0; i < rangeLength; i++) {
-            if((_array[startIndex1 + i] != set._array[startIndex2 + i])) return false;
-        }
         return true;
     }
 
 
     public void makeNull() {
+        // Просто обнуляем массив
         for (int i = 0; i < _array.length; i++) {
             _array[i] = 0;
         }
@@ -262,15 +175,17 @@ public class Set {
     // Создает массив из диапазона
     private int getArrayElementCount(Range range) {
         int len;
-        // Если диапазон положительный
+        // Если диапазон положительный, делим каждую отдельную границу на 32 и + 1
         if (range.start >= 0) {
             len = range.end / 32 - range.start / 32 + 1;
         }
-        // Если диапазон отрицательный
+        // Если диапазон отрицательный, делим каждую отдельную границу на 32
+        // для каждой + 1 для решения несимметричност + 1
         else if (range.end < 0) {
             len = (range.end + 1) / 32 - (range.start + 1) / 32 + 1;
         }
-        // Если диапазон двусторонний
+        // Если диапазон двусторонний, просто делим на 32 диапазон конца и диапазон (начала + 1) + 2
+        // + 2 потому что минимальное кол-во элементов это 2 для двустороннего
         else {
             len = range.end / 32 - (range.start + 1) / 32 + 2;
         }
@@ -279,9 +194,15 @@ public class Set {
 
     // Находит индекс элемента массива и бит в котором находится число
     private Position findInArray(int value) {
+        // Чтобы определить индекс отрицательного числа просто разница начала диапазон и числа, +1 для симметрии
+        // И деленное на 32 по отдельности
+        // Для отрицательного числа мы должные инвертировать бит,
+        // Потому что отрицательное число по модулю это первый бит числа
         if (value < 0) {
             return new Position((value + 1) / 32 - (_range.start + 1) / 32, 31 - ((-value- 1) % 32));
         } else {
+            // Если число положительное, то бит
+            // Если диапазон двусторонний, тогда нужно учесть отрицательные числа с их симетрии и добавить + 1
             if(_range.start < 0) {
                 return new Position(value / 32 - (_range.start + 1) / 32 + 1, value % 32);
             }
@@ -293,6 +214,7 @@ public class Set {
 
     // Находит индекс элемента массива в котором находится число
     private int findIndex(int value) {
+        // Тоже самое, что и наверху только чисто для индекса
         if (value < 0) {
             return (value + 1) / 32 - (_range.start + 1) / 32;
         } else {
@@ -319,32 +241,31 @@ public class Set {
 
     // Проверяет есть ли такое число в множестве
     private boolean isMember(int x) {
+        // Сразу false, если вне диапазона
         if (outRange(x)) return false;
         var position = findInArray(x);
+        // Испоьзуем побитовую операцию на нужном индексе, чтобы определить есть ли 1 в нужном бите
         return (_array[position.index] & (1 << 31 - position.bit)) != 0;
     }
 
-    private boolean haveCommonElements(Set set) {
+    // Метод для проверки общих элементов
+    public boolean haveCommonElements(Set set) {
+        // Если диапазонны не перескаются, то не имеет общих элементов
         if(rangeNotInter(_range, set._range)) return false;
         // Находим диапазон пересечения
-        Range interRange = new Range(Math.max(_range.start, set._range.start), Math.min(_range.end, set._range.end));
         // Вычисляем смещения индексов
-        int startIndex1 = findIndex(interRange.start);
-        int startIndex2 = set.findIndex(interRange.start);
-
-        int rangeLength = getArrayElementCount(interRange);
-
-        // Выполняем побитовое умножение
-        for (int i = 0; i < rangeLength; i++) {
-            if((_array[startIndex1 + i] & set._array[startIndex2 + i]) != 0) return true;
-        }
+        // Выполняем побитовое умножение и проверяем на неравнество нулю
+        // if((_array[startIndex1 + i] & set._array[startIndex2 + i]) != 0) return true;
         return false;
     }
 
+    // Метод для определния числа по индексу и биту
     private int getNumberFromPosition(int index, int bit) {
-        // Находим число которое находится в первой ячейке массива на 0 бите
+        // Находим число которое находится число откуда начинать просчет, округляя в меньщую сторону
+        // Например если -40, то -65. Если 40, то 32
         int startValue = _range.start < 0 ? -((-_range.start + 31) & ~31) : ((_range.start + 31) & ~31) - 32;
-        return startValue  + 32*index + bit - 1;
+        // Используем вычисленное число  + прибавляем номер бита и индекс массива умноженное на 32
+        return startValue  + 32*index + bit;
     }
 
 
