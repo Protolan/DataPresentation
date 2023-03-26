@@ -34,30 +34,44 @@ public class Set {
         // Создаем новое множество их исходного множества
         // Пробегаемся по второму множеству пока не будут вставлены все элементы
         Set unionSet = new Set();
-        Node unionCurrent;
         Node firstCurrent = _head;
         Node secondCurrent = set._head;
-        // Инициализируем младшую голову
-        unionCurrent = new Node(Math.min(firstCurrent.value, secondCurrent.value), null);
+        // Инициализируем голову списка, которая является младшой голов из двух голов
+        unionSet._head = new Node(Math.min(firstCurrent.value, secondCurrent.value), null);
+        Node unionCurrent = unionSet._head;
+        firstCurrent = firstCurrent.next;
+        secondCurrent = secondCurrent.next;
+        // Идем по спискам пока кто либо из них не станет пустым
+        // Если значения равны, тогда мы берем любое, и продвигаем по дальше
+        // Мы ищем наименьший элемент из двух список и копируем его следущим элементом
+        // Когда мы берем элемент из какого то списка мы меняем его на следущий
         while (firstCurrent != null && secondCurrent != null) {
-            Node nextNode;
             if(firstCurrent.value == secondCurrent.value) {
-                unionCurrent
+                unionCurrent.next = new Node(firstCurrent.value, null);
+                firstCurrent = firstCurrent.next;
+                secondCurrent = secondCurrent.next;
             }
-            if(firstCurrent.value < secondCurrent.value) {
-
+            else if(firstCurrent.value < secondCurrent.value) {
+                unionCurrent.next = new Node(firstCurrent.value, null);
+                firstCurrent = firstCurrent.next;
             }
-            else if(firstCurrent.va)
-            if(currentUnionNode.next != null) {
-                if(currentCopyNode.value > currentUnionNode.value) {
-                    currentUnionNode.next =
-                }
-                if(currentCopyNode.value < currentCopyNode.value) {
-
-                }
+            else {
+                unionCurrent.next = new Node(secondCurrent.value, null);
+                secondCurrent = secondCurrent.next;
             }
+            unionCurrent = unionCurrent.next;
         }
-        return null;
+        // Если кто то из списков остался не пустым мы должны скопировать отуда все его элементо последовательно в конец
+
+        while (firstCurrent != null) {
+            unionCurrent.next = new Node(firstCurrent.value, null);
+            firstCurrent = firstCurrent.next;
+        }
+        while (secondCurrent != null) {
+            unionCurrent.next = new Node(secondCurrent.value, null);
+            secondCurrent = secondCurrent.next;
+        }
+        return unionSet;
     }
 
     public Set intersection(Set set) {
