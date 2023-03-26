@@ -104,7 +104,8 @@ public class Set {
                         interCurrent = interSet._head;
                     }
                     else {
-                        firstCurrent.next = new Node(firstCurrent.value, null);
+                        interCurrent.next = new Node(firstCurrent.value, null);
+                        interCurrent = interCurrent.next;
                     }
                     firstCurrent = firstCurrent.next;
                     secondCurrent = secondCurrent.next;
@@ -112,9 +113,6 @@ public class Set {
                     firstCurrent = firstCurrent.next;
                 } else {
                     secondCurrent = secondCurrent.next;
-                }
-                if(interCurrent != null) {
-                    interCurrent = interCurrent.next;
                 }
             }
         }
@@ -167,10 +165,12 @@ public class Set {
         // Если кто то из списков остался не пустым мы должны скопировать отуда все его элементо последовательно в конец
         while (firstCurrent != null) {
             unionCurrent.next = new Node(firstCurrent.value, null);
+            unionCurrent = unionCurrent.next;
             firstCurrent = firstCurrent.next;
         }
         while (secondCurrent != null) {
             unionCurrent.next = new Node(secondCurrent.value, null);
+            unionCurrent = unionCurrent.next;
             secondCurrent = secondCurrent.next;
         }
         return unionSet;
