@@ -48,13 +48,11 @@ public class Set {
         Node unionCurrent = unionSet._head;
         firstCurrent = firstCurrent.next;
         secondCurrent = secondCurrent.next;
-        System.out.println("Инициализируем голову " + unionSet._head.value);
         // Идем по спискам пока кто либо из них не станет пустым
         // Если значения равны, тогда мы берем любое, и продвигаем по дальше
         // Мы ищем наименьший элемент из двух список и копируем его следущим элементом
         // Когда мы берем элемент из какого то списка мы меняем его на следущий
         while (firstCurrent != null && secondCurrent != null) {
-            System.out.println("Cписки не пустые");
             if (firstCurrent.value == secondCurrent.value) {
                 unionCurrent.next = new Node(firstCurrent.value, null);
                 firstCurrent = firstCurrent.next;
@@ -70,13 +68,11 @@ public class Set {
         }
         // Если кто то из списков остался не пустым мы должны скопировать отуда все его элементо последовательно в конец
         while (firstCurrent != null) {
-            System.out.println("Первый " + firstCurrent.value);
             unionCurrent.next = new Node(firstCurrent.value, null);
             unionCurrent = unionCurrent.next;
             firstCurrent = firstCurrent.next;
         }
         while (secondCurrent != null) {
-            System.out.println("Второй " + secondCurrent.value);
             unionCurrent.next = new Node(secondCurrent.value, null);
             unionCurrent = unionCurrent.next;
             secondCurrent = secondCurrent.next;
@@ -97,23 +93,21 @@ public class Set {
         Node secondCurrent = set._head;
         // Ищем первый элемент пересечения, если элемент не найден, значит пересечений нет
         while (firstCurrent != null && secondCurrent != null) {
-            while (firstCurrent != null && secondCurrent != null) {
-                if (firstCurrent.value == secondCurrent.value) {
-                    if(interCurrent == null) {
-                        interSet._head = new Node(firstCurrent.value, null);
-                        interCurrent = interSet._head;
-                    }
-                    else {
-                        interCurrent.next = new Node(firstCurrent.value, null);
-                        interCurrent = interCurrent.next;
-                    }
-                    firstCurrent = firstCurrent.next;
-                    secondCurrent = secondCurrent.next;
-                } else if (firstCurrent.value < secondCurrent.value) {
-                    firstCurrent = firstCurrent.next;
-                } else {
-                    secondCurrent = secondCurrent.next;
+            if (firstCurrent.value == secondCurrent.value) {
+                if(interCurrent == null) {
+                    interSet._head = new Node(firstCurrent.value, null);
+                    interCurrent = interSet._head;
                 }
+                else {
+                    interCurrent.next = new Node(firstCurrent.value, null);
+                    interCurrent = interCurrent.next;
+                }
+                firstCurrent = firstCurrent.next;
+                secondCurrent = secondCurrent.next;
+            } else if (firstCurrent.value < secondCurrent.value) {
+                firstCurrent = firstCurrent.next;
+            } else {
+                secondCurrent = secondCurrent.next;
             }
         }
         return interSet;
@@ -121,8 +115,44 @@ public class Set {
 
     public Set difference(Set set) {
         // Если список этот же возвращаем пустой список
-        if (set == this) return new Set();
-        return null;
+        if (set == this || set._head == null) return new Set();
+        if(_head == null) return new Set(set);
+        // Создаем копие входящиего множества
+        Set differSet = new Set(set);
+        Node differCurrent = null;
+        Node firstCurrent = _head;
+        Node secondCurrent = set._head;
+        while (firstCurrent != null && secondCurrent != null) {
+            if (firstCurrent.value == secondCurrent.value) {
+                firstCurrent = firstCurrent.next;
+                secondCurrent = secondCurrent.next;
+            } else if (firstCurrent.value < secondCurrent.value) {
+                firstCurrent = firstCurrent.next;
+            } else {
+                if(differCurrent == null) {
+                    differSet._head = new Node(secondCurrent.value, null);
+                    differCurrent = differSet._head;
+                }
+                else {
+                    differCurrent.next = new Node(secondCurrent.value, null);
+                    differCurrent = differCurrent.next;
+                }
+                secondCurrent = secondCurrent.next;
+            }
+        }
+        while (secondCurrent != null) {
+            if(differCurrent == null) {
+                differSet._head = new Node(secondCurrent.value, null);
+                differCurrent = differSet._head;
+            }
+            else {
+                differCurrent.next = new Node(secondCurrent.value, null);
+                differCurrent = differCurrent.next;
+            }
+            differCurrent = differCurrent.next;
+            secondCurrent = secondCurrent.next;
+        }
+        return differSet;
     }
 
     public Set merge(Set set) {

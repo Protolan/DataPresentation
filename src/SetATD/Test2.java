@@ -23,5 +23,7 @@ public class Test2 {
         unionSet.print();
         var interSet = set1.intersection(set2);
         interSet.print();
+        var differSet = set1.difference(set2);
+        differSet.print();
     }
 }
