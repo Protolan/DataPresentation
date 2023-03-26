@@ -16,12 +16,47 @@ public class Set {
 
 
     public Set() { _head = null; }
+    public Set(Set set) { copyFrom(set);}
 
     public Set union(Set set) {
         if(set == this) return set;
-        // Копируем элемента из первого в множества в новое
-        // Перебираем для каждого отдельного значения множества, в какую позицию его вставить
-        // Или есть ли он уже в множества
+        // Если оба списка пустых возвращаем пустой список
+        if(set._head == null && _head == null) {
+            return new Set();
+        }
+        // Если кто из списка пустой, возвращаем копию списка
+        if(set._head == null) {
+            return new Set(set);
+        }
+        if(_head == null) {
+            return new Set(this);
+        }
+        // Создаем новое множество их исходного множества
+        // Пробегаемся по второму множеству пока не будут вставлены все элементы
+        Set unionSet = new Set();
+        Node unionCurrent;
+        Node firstCurrent = _head;
+        Node secondCurrent = set._head;
+        // Инициализируем младшую голову
+        unionCurrent = new Node(Math.min(firstCurrent.value, secondCurrent.value), null);
+        while (firstCurrent != null && secondCurrent != null) {
+            Node nextNode;
+            if(firstCurrent.value == secondCurrent.value) {
+                unionCurrent
+            }
+            if(firstCurrent.value < secondCurrent.value) {
+
+            }
+            else if(firstCurrent.va)
+            if(currentUnionNode.next != null) {
+                if(currentCopyNode.value > currentUnionNode.value) {
+                    currentUnionNode.next =
+                }
+                if(currentCopyNode.value < currentCopyNode.value) {
+
+                }
+            }
+        }
         return null;
     }
 
@@ -43,10 +78,14 @@ public class Set {
     // Присваивает новое множество
     // Необходимо скопировать ячейки то есть создать новые ноды
     public void assign(Set set) {
+        copyFrom(set);
+    }
+
+    private void copyFrom(Set set) {
         // Если множество пустое, то обнуляет список
         if(set._head == null) {
-           _head = null;
-           return;
+            _head = null;
+            return;
         }
         Node from = set._head;
         _head = new Node(set._head.value, null);
