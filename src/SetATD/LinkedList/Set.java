@@ -1,11 +1,13 @@
 package SetATD.LinkedList;
+
 import SetATD.Exceptions.SetException;
 
 public class Set {
-    private class Node{
+    private class Node {
         public int value;
         public Node next;
-        public Node(int value, Node n){
+
+        public Node(int value, Node n) {
             this.value = value;
             next = n;
         }
@@ -14,21 +16,129 @@ public class Set {
     private Node _head;
 
 
+    public Set() {
+        _head = null;
+    }
 
-    public Set() { _head = null; }
-    public Set(Set set) { copyFrom(set);}
+    public Set(Set set) {
+        copyFrom(set);
+    }
 
     public Set union(Set set) {
-        if(set == this) return set;
+        // Если список этот же возвращает копию списка
+        if (set == this) return new Set(set);
         // Если оба списка пустых возвращаем пустой список
-        if(set._head == null && _head == null) {
+        if (set._head == null && _head == null) {
             return new Set();
         }
-        // Если кто из списка пустой, возвращаем копию списка
-        if(set._head == null) {
+        // Если кто из списка пустой, возвращаем копию непустого списка
+        if (set._head == null) {
             return new Set(set);
         }
-        if(_head == null) {
+        if (_head == null) {
+            return new Set(this);
+        }
+        // Создаем новое множество их исходного множества
+        // Пробегаемся по второму множеству пока не будут вставлены все элементы
+        Set unionSet = new Set();
+        Node firstCurrent = _head;
+        Node secondCurrent = set._head;
+        // Инициализируем голову списка, которая является младшой голов из двух голов
+        unionSet._head = new Node(Math.min(firstCurrent.value, secondCurrent.value), null);
+        Node unionCurrent = unionSet._head;
+        firstCurrent = firstCurrent.next;
+        secondCurrent = secondCurrent.next;
+        System.out.println("Инициализируем голову " + unionSet._head.value);
+        // Идем по спискам пока кто либо из них не станет пустым
+        // Если значения равны, тогда мы берем любое, и продвигаем по дальше
+        // Мы ищем наименьший элемент из двух список и копируем его следущим элементом
+        // Когда мы берем элемент из какого то списка мы меняем его на следущий
+        while (firstCurrent != null && secondCurrent != null) {
+            System.out.println("Cписки не пустые");
+            if (firstCurrent.value == secondCurrent.value) {
+                unionCurrent.next = new Node(firstCurrent.value, null);
+                firstCurrent = firstCurrent.next;
+                secondCurrent = secondCurrent.next;
+            } else if (firstCurrent.value < secondCurrent.value) {
+                unionCurrent.next = new Node(firstCurrent.value, null);
+                firstCurrent = firstCurrent.next;
+            } else {
+                unionCurrent.next = new Node(secondCurrent.value, null);
+                secondCurrent = secondCurrent.next;
+            }
+            unionCurrent = unionCurrent.next;
+        }
+        // Если кто то из списков остался не пустым мы должны скопировать отуда все его элементо последовательно в конец
+        while (firstCurrent != null) {
+            System.out.println("Первый " + firstCurrent.value);
+            unionCurrent.next = new Node(firstCurrent.value, null);
+            unionCurrent = unionCurrent.next;
+            firstCurrent = firstCurrent.next;
+        }
+        while (secondCurrent != null) {
+            System.out.println("Второй " + secondCurrent.value);
+            unionCurrent.next = new Node(secondCurrent.value, null);
+            unionCurrent = unionCurrent.next;
+            secondCurrent = secondCurrent.next;
+        }
+        return unionSet;
+    }
+
+    public Set intersection(Set set) {
+        // Если список этот же возвращает копию списка
+        if (set == this) return new Set(set);
+        // Если хотя бы один из списков пустой возвращаем пустой список
+        if (set._head == null || _head == null) {
+            return new Set();
+        }
+        Set interSet = new Set();
+        Node interCurrent = null;
+        Node firstCurrent = _head;
+        Node secondCurrent = set._head;
+        // Ищем первый элемент пересечения, если элемент не найден, значит пересечений нет
+        while (firstCurrent != null && secondCurrent != null) {
+            while (firstCurrent != null && secondCurrent != null) {
+                if (firstCurrent.value == secondCurrent.value) {
+                    if(interCurrent == null) {
+                        interSet._head = new Node(firstCurrent.value, null);
+                        interCurrent = interSet._head;
+                    }
+                    else {
+                        firstCurrent.next = new Node(firstCurrent.value, null);
+                    }
+                    firstCurrent = firstCurrent.next;
+                    secondCurrent = secondCurrent.next;
+                } else if (firstCurrent.value < secondCurrent.value) {
+                    firstCurrent = firstCurrent.next;
+                } else {
+                    secondCurrent = secondCurrent.next;
+                }
+                if(interCurrent != null) {
+                    interCurrent = interCurrent.next;
+                }
+            }
+        }
+        return interSet;
+    }
+
+    public Set difference(Set set) {
+        // Если список этот же возвращаем пустой список
+        if (set == this) return new Set();
+        return null;
+    }
+
+    public Set merge(Set set) {
+        // Если список этот же возвращает копию списка
+        if (set == this) return new Set(set);
+        // Если оба списка пустых возвращаем пустой список
+        if (set._head == null && _head == null) {
+            return new Set();
+        }
+        // Если кто из списка пустой, возвращаем копию непустого списка
+        if (set._head == null) {
+            return new Set(set);
+        }
+        if (_head == null) {
             return new Set(this);
         }
         // Создаем новое множество их исходного множества
@@ -42,27 +152,19 @@ public class Set {
         firstCurrent = firstCurrent.next;
         secondCurrent = secondCurrent.next;
         // Идем по спискам пока кто либо из них не станет пустым
-        // Если значения равны, тогда мы берем любое, и продвигаем по дальше
         // Мы ищем наименьший элемент из двух список и копируем его следущим элементом
         // Когда мы берем элемент из какого то списка мы меняем его на следущий
         while (firstCurrent != null && secondCurrent != null) {
-            if(firstCurrent.value == secondCurrent.value) {
+            if (firstCurrent.value < secondCurrent.value) {
                 unionCurrent.next = new Node(firstCurrent.value, null);
                 firstCurrent = firstCurrent.next;
-                secondCurrent = secondCurrent.next;
-            }
-            else if(firstCurrent.value < secondCurrent.value) {
-                unionCurrent.next = new Node(firstCurrent.value, null);
-                firstCurrent = firstCurrent.next;
-            }
-            else {
+            } else {
                 unionCurrent.next = new Node(secondCurrent.value, null);
                 secondCurrent = secondCurrent.next;
             }
             unionCurrent = unionCurrent.next;
         }
         // Если кто то из списков остался не пустым мы должны скопировать отуда все его элементо последовательно в конец
-
         while (firstCurrent != null) {
             unionCurrent.next = new Node(firstCurrent.value, null);
             firstCurrent = firstCurrent.next;
@@ -74,20 +176,6 @@ public class Set {
         return unionSet;
     }
 
-    public Set intersection(Set set) {
-        if(set == this) return set;
-        return null;
-    }
-
-    public Set difference(Set set) {
-        if(set == this) return new Set();
-        return null;
-    }
-
-    public Set merge(Set set) {
-        return null;
-    }
-
 
     // Присваивает новое множество
     // Необходимо скопировать ячейки то есть создать новые ноды
@@ -97,7 +185,7 @@ public class Set {
 
     private void copyFrom(Set set) {
         // Если множество пустое, то обнуляет список
-        if(set._head == null) {
+        if (set._head == null) {
             _head = null;
             return;
         }
@@ -134,14 +222,14 @@ public class Set {
     // Минимальный элемент это голова
     public int min() {
         // Если список пустой выбросить исключение
-        if(_head == null) throw new SetException("Список пустой");
+        if (_head == null) throw new SetException("Список пустой");
         return _head.value;
     }
 
     // Максимальный элемент это последний элемент списка
     public int max() {
         // Если список пустой выбросить исключение
-        if(_head == null) throw new SetException("Список пустой");
+        if (_head == null) throw new SetException("Список пустой");
         Node current = _head;
         while (current.next != null) {
             current = current.next;
@@ -154,12 +242,12 @@ public class Set {
     public void insert(int value) {
         Node closestNode = findClosest(value);
         // Если список пустой или новое значение самое маленькое
-        if(closestNode == null) {
+        if (closestNode == null) {
             _head = new Node(value, _head);
             return;
         }
         // Если уже есть в множестве возвращаем
-        if(closestNode.value == value) {
+        if (closestNode.value == value) {
             return;
         }
         closestNode.next = new Node(value, closestNode.next);
@@ -169,11 +257,11 @@ public class Set {
     public void delete(int value) {
         Node closestNode = findClosest(value);
         // Если элемента нет в множестве
-        if(closestNode == null || closestNode.value != value) {
+        if (closestNode == null || closestNode.value != value) {
             return;
         }
         // Если элемент голова
-        if(closestNode == _head) {
+        if (closestNode == _head) {
             _head = _head.next;
             return;
         }
@@ -195,7 +283,7 @@ public class Set {
         Node previous = null;
         Node current = _head;
         while (current != null && current.value <= value) {
-            previous =  current;
+            previous = current;
             current = current.next;
         }
         return previous;
@@ -203,15 +291,14 @@ public class Set {
 
     private boolean isMember(int value) {
         Node closest = findClosest(value);
-        if(closest == null || closest.value != value) return false;
+        if (closest == null || closest.value != value) return false;
         return true;
     }
 
 
-
     // Вывод
     public void print() {
-        if(_head == null) {
+        if (_head == null) {
             System.out.println("Список пустой");
             return;
         }
