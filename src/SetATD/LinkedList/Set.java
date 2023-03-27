@@ -285,23 +285,22 @@ public class Set {
 
     // Удаляет значение из множества, если оно там есть, если нет ничего не делать
     public void delete(int value) {
-        Node closestNode = findClosest(value);
-        // Если элемента нет в множестве
-        if (closestNode == null || closestNode.value != value) {
-            return;
-        }
+        if(_head == null) return;
         // Если элемент голова
-        if (closestNode == _head) {
+        if (_head.value == value) {
             _head = _head.next;
             return;
         }
-
-        // Ищем предыдущий элемент
-        Node previous = _head;
-        while (previous.next != closestNode) {
-            previous = previous.next;
+        Node previous = null;
+        Node current = _head;
+        while (current != null && current.value < value) {
+            previous = current;
+            current = current.next;
         }
-        previous.next = closestNode.next;
+        if (current == null || current.value != value) {
+            return;
+        }
+        previous.next = current.next;
     }
 
     public void makeNull() {

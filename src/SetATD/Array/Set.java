@@ -44,11 +44,19 @@ public class Set {
         _array = new int[arrayLength];
     }
 
+    private Set(Set set) {
+        _range = new Range(set._range.start, set._range.end);
+        _array = new int[set._array.length];
+        for (int i = 0; i < _array.length; i++) {
+            _array[i] = set._array[i];
+        }
+    }
+
 
     // Возвращает множество в которым есть все неповторяющиеся элементы из двух множеств
     public Set union(Set set) {
         // Если обьединяем это же множество возвращаем его
-        if (set == this) return this;
+        if (set == this) return new Set(set);
         // Вычисляем общий диапазон
         int x = Math.min(_range.start, set._range.start);
         int y = Math.max(_range.end, set._range.end);
@@ -71,7 +79,7 @@ public class Set {
     // Возвращает множество которое содержит общие элементы из двух множеств
     public Set intersection(Set set) {
         // При пересечение такого же множество возвращаем его
-        if (set == this) return this;
+        if (set == this) return new Set(set);
         // Если диапазоны не пересекаются то возвращаем пустое множество с минимальным диапазоном
         if (rangeNotInter(_range, set._range)) {
             int len = _range.start - _range.end;
@@ -101,7 +109,7 @@ public class Set {
     // Возвращает множество которое содержит элементы которых нет в исходном множестве
     public Set difference(Set set) {
         // Если множества не пересекаются, то возвращаем это же множество
-        if (rangeNotInter(_range, set._range)) return this;
+        if (rangeNotInter(_range, set._range)) new Set(set);
         // Если это же множество, то возвращаем пустое множество с этим же диапазоном
         Set differenceSet = new Set(new Range(_range.start, _range.end), _array.length);
         if (set == this) return differenceSet;
@@ -125,7 +133,7 @@ public class Set {
     // Возвращает множество которое состоит из двух множеств, может быть выполнены если множество не имеют общих элементов
     public Set merge(Set set) {
         // Мы не можем соединить одно и тоже множество
-        if (set == this) return this;
+        if (set == this) return new Set(set);
         // Мы не может соединить перескающиеся множества
         if (haveCommonElements(set)) return this;
         // Вычисляем общий диапазон
