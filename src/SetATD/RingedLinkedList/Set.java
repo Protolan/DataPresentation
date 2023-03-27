@@ -40,11 +40,13 @@ public class Set {
         if (set._tail == _tail) {
             return true;
         }
-        // Иначе проверям по узлам на равенство
+        // Проходим параллельно по узлам обоим списка, пока кто-либо не закончиться
+        // Если хотя бы один узел не равен, то возвращаем false
+        // Если один из списков или оба списка закончилось, результатом будет равенство следующих элементов обоих множеств
         Node set1Current = _tail;
         Node set2Current = set._tail;
         while (set1Current.next != _tail && set2Current.next != set._tail) {
-            if(set1Current.value != set2Current.value) {
+            if (set1Current.value != set2Current.value) {
                 return false;
             }
             set1Current = set1Current.next;
@@ -116,12 +118,11 @@ public class Set {
         // Случай, если удаляемое значение - хвост
         // Если элемент единственный, то просто обнуляет хвост
         // Иначе, ищем предыдущий, и обновляем значение хвоста
-        if(_tail.value == value) {
-            if(_tail == _tail.next) {
+        if (_tail.value == value) {
+            if (_tail == _tail.next) {
                 _tail = null;
                 return;
-            }
-            else {
+            } else {
                 Node previous = _tail;
                 while (previous.next != _tail) {
                     previous = previous.next;
@@ -138,7 +139,7 @@ public class Set {
             previous = current;
             current = current.next;
         }
-        if(current.value == value) {
+        if (current.value == value) {
             previous.next = current.next;
         }
     }
@@ -154,7 +155,7 @@ public class Set {
     // Может вызваться если tail не равен null
     // Возвращает null значит нужно вставлять в tail.next
     private Node findClosest(int value) {
-        if(_tail.value == value) return _tail;
+        if (_tail.value == value) return _tail;
         Node previous = _tail;
         Node current = _tail.next;
         while (current != _tail && current.value <= value) {
@@ -166,27 +167,28 @@ public class Set {
 
     // Определяет есть ли число в множестве
     private boolean isMember(int value) {
+        if(_tail == null) return false;
         // Вызываем метод findClosest для поиска узла с этим значением
         Node closest = findClosest(value);
         // Если список пустой или не найдее элемент с таким значением
-        if (_tail == null || closest.value != value) return false;
+        if (closest.value != value) return false;
         // Если все хорошо, значит принадлежит
         return true;
     }
 
     // Копирует множество
     private void copyFrom(Set set) {
-        // Если множество пустое, то обнуляем список
+        // Если копируемое множество пустое, то обнуляем список
         if (set._tail == null) {
             _tail = null;
             return;
         }
-        // Инчае копируем значения
-        Node from = set._tail;
+        // Иначе инициализируем хвост и по узлам копируем взе значения
         _tail = new Node(set._tail.value, null);
         _tail.next = _tail;
+        Node from = set._tail;
         Node to = _tail;
-        while (from.next != _tail) {
+        while (from.next != set._tail) {
             to.next = new Node(from.next.value, _tail);
             from = from.next;
             to = to.next;
