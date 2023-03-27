@@ -27,6 +27,194 @@ public class Set {
         copyFrom(set);
     }
 
+    public Set union(Set set) {
+        // Если список этот же возвращает копию списка
+        if (set == this) return new Set(set);
+        // Если оба списка пустых возвращаем пустой список
+        if (set._tail == null && _tail == null) {
+            return new Set();
+        }
+        // Если кто из списка пустой, возвращаем копию непустого списка
+        if (set._tail == null) {
+            return new Set(set);
+        }
+        if (_tail == null) {
+            return new Set(this);
+        }
+        // Создаем новое множество их исходного множества
+        // Пробегаемся по второму множеству пока не будут вставлены все элементы
+        Set unionSet = new Set();
+        Node firstCurrent = _tail.next;
+        Node secondCurrent = set._tail.next;
+        // Инициализируем голову списка, которая является младшей голов из двух голов
+        unionSet._tail = new Node(Math.min(firstCurrent.value, secondCurrent.value), unionSet._tail);
+        Node unionCurrent = unionSet._tail;
+        firstCurrent = firstCurrent.next;
+        secondCurrent = secondCurrent.next;
+        // Идем по спискам пока кто либо из них не станет пустым
+        // Если значения равны, тогда мы берем любое, и продвигаем по дальше
+        // Мы ищем наименьший элемент из двух список и копируем его следущим элементом
+        // Когда мы берем элемент из какого то списка мы меняем его на следущий
+        while (firstCurrent != _tail.next && secondCurrent != set._tail.next) {
+            if (firstCurrent.value == secondCurrent.value) {
+                unionCurrent.next = new Node(firstCurrent.value, unionSet._tail);
+                firstCurrent = firstCurrent.next;
+                secondCurrent = secondCurrent.next;
+            } else if (firstCurrent.value < secondCurrent.value) {
+                unionCurrent.next = new Node(firstCurrent.value, unionSet._tail);
+                firstCurrent = firstCurrent.next;
+            } else {
+                unionCurrent.next = new Node(secondCurrent.value, unionSet._tail);
+                secondCurrent = secondCurrent.next;
+            }
+            unionCurrent = unionCurrent.next;
+        }
+        unionSet.print();
+        // Если кто то из списков остался не пустым мы должны скопировать отуда все его элементо последовательно в конец
+        while (firstCurrent != _tail.next) {
+            System.out.println("oneLeft " + firstCurrent.value);
+            unionCurrent.next = new Node(firstCurrent.value, unionSet._tail);
+            unionCurrent = unionCurrent.next;
+            firstCurrent = firstCurrent.next;
+        }
+        while (secondCurrent != set._tail.next) {
+            System.out.println("secondLeft");
+            unionCurrent.next = new Node(secondCurrent.value, unionSet._tail);
+            unionCurrent = unionCurrent.next;
+            secondCurrent = secondCurrent.next;
+        }
+        return unionSet;
+    }
+
+    public Set intersection(Set set) {
+        // Если список этот же возвращает копию списка
+        if (set == this) return new Set(set);
+        // Если хотя бы один из списков пустой возвращаем пустой список
+        if (set._tail == null || _tail == null) {
+            return new Set();
+        }
+        Set interSet = new Set();
+        Node interCurrent = null;
+        Node firstCurrent = _tail.next;
+        Node secondCurrent = set._tail.next;
+        // Ищем первый элемент пересечения, если элемент не найден, значит пересечений нет
+        while (firstCurrent != _tail && secondCurrent != _tail) {
+            if (firstCurrent.value == secondCurrent.value) {
+                if(interCurrent == null) {
+                    interSet._tail = new Node(firstCurrent.value, interSet._tail);
+                    interCurrent = interSet._tail;
+                }
+                else {
+                    interCurrent.next = new Node(firstCurrent.value, interSet._tail);
+                    interCurrent = interCurrent.next;
+                }
+                firstCurrent = firstCurrent.next;
+                secondCurrent = secondCurrent.next;
+            } else if (firstCurrent.value < secondCurrent.value) {
+                firstCurrent = firstCurrent.next;
+            } else {
+                secondCurrent = secondCurrent.next;
+            }
+        }
+        return interSet;
+    }
+
+    public Set difference(Set set) {
+        // Если список этот же возвращаем пустой список
+        if (set == this || set._tail == null) return new Set();
+        if(_tail == null) return new Set(set);
+        // Создаем копие входящие го множества
+        Set differSet = new Set(set);
+        Node differCurrent = null;
+        Node firstCurrent = _tail.next;
+        Node secondCurrent = set._tail.next;
+        while (firstCurrent != _tail && secondCurrent != set._tail) {
+            if (firstCurrent.value == secondCurrent.value) {
+                firstCurrent = firstCurrent.next;
+                secondCurrent = secondCurrent.next;
+            } else if (firstCurrent.value < secondCurrent.value) {
+                firstCurrent = firstCurrent.next;
+            } else {
+                if(differCurrent == null) {
+                    differSet._tail = new Node(secondCurrent.value, differSet._tail);
+                    differCurrent = differSet._tail;
+                }
+                else {
+                    differCurrent.next = new Node(secondCurrent.value, differSet._tail);
+                    differCurrent = differCurrent.next;
+                }
+                secondCurrent = secondCurrent.next;
+            }
+        }
+        while (secondCurrent != set._tail) {
+            if(differCurrent == null) {
+                differSet._tail = new Node(secondCurrent.value, differSet._tail);
+                differCurrent = differSet._tail;
+            }
+            else {
+                differCurrent.next = new Node(secondCurrent.value, differSet._tail);
+                differCurrent = differCurrent.next;
+            }
+            differCurrent = differCurrent.next;
+            secondCurrent = secondCurrent.next;
+        }
+        return differSet;
+    }
+
+    public Set merge(Set set) {
+        // Если список этот же возвращает копию списка
+        if (set == this) return new Set(set);
+        // Если оба списка пустых возвращаем пустой список
+        if (set._tail == null && _tail == null) {
+            return new Set();
+        }
+        // Если кто из списка пустой, возвращаем копию непустого списка
+        if (set._tail == null) {
+            return new Set(set);
+        }
+        if (_tail == null) {
+            return new Set(this);
+        }
+        // Создаем новое множество их исходного множества
+        // Пробегаемся по второму множеству пока не будут вставлены все элементы
+        Set unionSet = new Set();
+        Node firstCurrent = _tail.next;
+        Node secondCurrent = set._tail.next;
+        // Инициализируем голову списка, которая является младшей голов из двух голов
+        unionSet._tail = new Node(Math.min(firstCurrent.value, secondCurrent.value), null);
+        unionSet._tail.next = _tail;
+        Node unionCurrent = unionSet._tail;
+        firstCurrent = firstCurrent.next;
+        secondCurrent = secondCurrent.next;
+        // Идем по спискам пока кто либо из них не станет пустым
+        // Если значения равны, тогда мы берем любое, и продвигаем по дальше
+        // Мы ищем наименьший элемент из двух список и копируем его следущим элементом
+        // Когда мы берем элемент из какого то списка мы меняем его на следущий
+        while (firstCurrent != _tail && secondCurrent != set._tail) {
+            if (firstCurrent.value < secondCurrent.value) {
+                unionCurrent.next = new Node(firstCurrent.value, unionSet._tail);
+                firstCurrent = firstCurrent.next;
+            } else {
+                unionCurrent.next = new Node(secondCurrent.value, unionSet._tail);
+                secondCurrent = secondCurrent.next;
+            }
+            unionCurrent = unionCurrent.next;
+        }
+        // Если кто то из списков остался не пустым мы должны скопировать отуда все его элементо последовательно в конец
+        while (firstCurrent != _tail) {
+            unionCurrent.next = new Node(firstCurrent.value, unionSet._tail);
+            unionCurrent = unionCurrent.next;
+            firstCurrent = firstCurrent.next;
+        }
+        while (secondCurrent != set._tail) {
+            unionCurrent.next = new Node(secondCurrent.value, unionSet._tail);
+            unionCurrent = unionCurrent.next;
+            secondCurrent = secondCurrent.next;
+        }
+        return unionSet;
+    }
+
+
 
     // Присваивает новое множество в исходное множество
     public void assign(Set set) {
@@ -152,8 +340,6 @@ public class Set {
     }
 
     // Находит узел который, находит это же значение или ближайшее меньшее его значение
-    // Может вызваться если tail не равен null
-    // Возвращает null значит нужно вставлять в tail.next
     private Node findClosest(int value) {
         if (_tail.value == value) return _tail;
         Node previous = _tail;
@@ -195,6 +381,10 @@ public class Set {
         }
     }
 
+
+    private boolean rangeNotInter(Set first, Set second) {
+        return first._tail.value < second._tail.next.value || second._tail.value < first._tail.next.value;
+    }
 
     // Вывод
     public void print() {

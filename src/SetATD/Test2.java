@@ -15,17 +15,15 @@ public class Test2 {
         set2.insert(-22);
         set2.insert(-15);
         set2.print();
-        set2.assign(set1);
-        set2.print();
         System.out.println(set1.max());
         System.out.println(set2.max());
         System.out.println(set1.member(-15));
         System.out.println(set1.equal(set2));
-//        var unionSet = set1.union(set2);
-//        unionSet.print();
-//        var interSet = set1.intersection(set2);
-//        interSet.print();
-//        var differSet = set1.difference(set2);
-//        differSet.print();
+        var unionSet = set1.union(set2);
+        unionSet.print();
+        var interSet = set1.intersection(set2);
+        interSet.print();
+        var differSet = set1.difference(set2);
+        differSet.print();
     }
 }
