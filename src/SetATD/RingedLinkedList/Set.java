@@ -52,7 +52,7 @@ public class Set {
 
     // Возвращает то множество в котором есть это число
     public Set find(Set set, int value) {
-        // Использует метод isMember, чтобы найти множестве в котором есть это значение
+        // Использует метод isMember, чтобы найти множество в котором есть это значение
         if (isMember(value)) return this;
         else if (set.isMember(value)) return set;
         else return null;
@@ -87,26 +87,20 @@ public class Set {
             _tail.next = _tail;
             return;
         }
-        // Если единственный элемент
-        if (_tail == _tail.next) {
-            // Если равен, ничего не делать
-            if (_tail.value == value) return;
-            // Если меньше тогда нужно вставить в начало
-            if (_tail.value < value)
-                _tail.next = new Node(value, _tail);
-                // Если больше тогда нужно вставить в конец
-            else
-                _tail = new Node(value, _tail);
+        // Если больше хвоста, должен быть новый хвост
+        if (value > _tail.value) {
+            Node temp = _tail;
+            _tail = new Node(value, _tail.next);
+            temp.next = _tail;
             return;
         }
         // Ищем узел с нужным значением помощью findClosest
         Node closestNode = findClosest(value);
         // Если уже есть в множестве, ничего не делаем
-        if (closestNode == _tail) {
-
+        if (closestNode.value == value) {
+            return;
         }
         // Иначе вставляем новый элемент после ближайшего меньшего значения
-        System.out.println("Вставляем " + value + " между " + closestNode.value + " и " + closestNode.next.value);
         closestNode.next = new Node(value, closestNode.next);
     }
 
@@ -116,32 +110,48 @@ public class Set {
         if (_tail == null) {
             return;
         }
-        // Ищем узел с нужным значением помощью findClosest
-        Node closestNode = findClosest(value);
-        // Если не найден узел, ничего не делаем
-        if (closestNode.value != value) {
-            return;
+        // Случай, если удаляемое значение - хвост
+        // Если элемент единственный, то просто обнуляет хвост
+        // Иначе, ищем предыдущий, и обновляем значение хвоста
+        if(_tail.value == value) {
+            if(_tail == _tail.next) {
+                _tail = null;
+                return;
+            }
+            else {
+                Node previous = _tail;
+                while (previous.next != _tail) {
+                    previous = previous.next;
+                }
+                previous.next = _tail.next;
+                _tail = previous;
+            }
         }
-        // Иначе ищем предыдущий элемент и удаляем нужный узел
+        // Ищем узел, где находиться число, и одновременно храним его предыдущий элемент для замены
+        // Если не найден ничего не делаем
         Node previous = _tail;
-        while (previous.next != closestNode) {
-            previous = previous.next;
+        Node current = _tail.next;
+        while (current != _tail && current.value < value) {
+            previous = current;
+            current = current.next;
         }
-
-        previous.next = closestNode.next;
+        if(current.value == value) {
+            previous.next = current.next;
+        }
     }
 
 
     // Обнуляет список
     public void makeNull() {
-        // Обнуляем хвст
+        // Обнуляем хвост
         _tail = null;
     }
 
-    // Находит узел который находит это же значение или ближайшее меньшее его значение
-    // Может вызватся если tail не равен null
+    // Находит узел который, находит это же значение или ближайшее меньшее его значение
+    // Может вызваться если tail не равен null
     // Возвращает null значит нужно вставлять в tail.next
     private Node findClosest(int value) {
+        if(_tail.value == value) return _tail;
         Node previous = _tail;
         Node current = _tail.next;
         while (current != _tail && current.value <= value) {
