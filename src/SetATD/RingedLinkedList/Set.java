@@ -43,11 +43,14 @@ public class Set {
         // Иначе проверям по узлам на равенство
         Node set1Current = _tail;
         Node set2Current = set._tail;
-        while (set1Current.next != _tail && set2Current.next != set._tail && set1Current.value == set2Current.value) {
+        while (set1Current.next != _tail && set2Current.next != set._tail) {
+            if(set1Current.value != set2Current.value) {
+                return false;
+            }
             set1Current = set1Current.next;
             set2Current = set2Current.next;
         }
-        return set1Current == set2Current;
+        return set1Current.next.value == set2Current.next.value;
     }
 
     // Возвращает то множество в котором есть это число
