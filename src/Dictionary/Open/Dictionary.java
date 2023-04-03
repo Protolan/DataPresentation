@@ -14,6 +14,13 @@ public class Dictionary {
             this.name = name;
             next = null;
         }
+
+        public boolean compareNames(char[] name) {
+            for (int i = 0; i < name.length; i++) {
+                if(this.name[i] != name[i]) return false;
+            }
+            return true;
+        }
     }
 
     // Количество классов для решения колизии
@@ -37,30 +44,66 @@ public class Dictionary {
             _array[index] = new Node(name);
             return;
         }
-        Node current = _array[index];
-        while (current.next != null) {
-            current = current.next;
-        }
         // Если элемент не пустой, тогда идем по связному списку пока next элемента не будет равен null
         // Так мы найдем предыдущий элемент, чтобы вставить в него следущий элемент
         // Также проверяем во время пробежки проверяем нет ли там уже такого имени, и если найдеться то return
+        Node current = _array[index];
+        while (current.next != null) {
+            if(current.compareNames(name)) return;
+            current = current.next;
+        }
+        current.next = new Node(name);
     }
 
     public void delete(char[] name) {
         // Вычисляем хеш индекс через метод hashFunction
-        // Если элемент пуcтой, тогда return
+        int index = hashFunction(name);
+        // Если элемент пуcтой, тогда нечего удалять, return
+        if(_array[index] == null) {
+            return;
+        }
+        // Проверям первый элемент
+        if(_array[index].compareNames(name)) {
+            if(_array[index].next == null) {
+                _array[index] = null;
+            }
+            else {
+                _array[index] = _array[index].next;
+            }
+            return;
+        }
         // Если элемент не пустой, тогда идем по связному списку пока next элемент не будет равен null
         // Проверяем во время пробежки next на это имя и если имя найдется тогда удаляем элемент
         // Если у удаляемого элемента нет previous, тогда обнуляем элемент массива
         // Если есть, то просто предыдущий ссылается на next текущего
+        Node current = _array[index].next;
+        while (current.next != null) {
+            if(current.compareNames(name)) {
+                current.next = current.next.next;
+                return;
+            }
+            current = current.next;
+        }
+
     }
 
     public boolean member(char[] name) {
         // Вычисляем хеш индекс через метод hashFunction
+        int index = hashFunction(name);
         // Если элемент пустой, тогда возвращаем false
+        if(_array[index] == null) {
+            return false;
+        }
         // Если элемент не пустой, тогда идем по связному списку пока next элемент не будет равен null
         // Проверяем во время пробежки next на это имя и если имя найдется тогда return true
         // Если не найден, то в конце вернуть false
+        Node current = _array[index];
+        while (current != null) {
+            if(current.compareNames(name)) {
+                return true;
+            }
+            current = current.next;
+        }
         return false;
     }
 
@@ -84,4 +127,21 @@ public class Dictionary {
         }
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        int counter = 1;
+        for (int i = 0; i < _array.length; i++) {
+            Node current = _array[i];
+            while (current != null) {
+                builder.append(counter);
+                builder.append(": ");
+                builder.append(current.name);
+                builder.append("\n");
+                current = current.next;
+                counter++;
+            }
+        }
+        return builder.toString();
+    }
 }
