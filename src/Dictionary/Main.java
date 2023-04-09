@@ -22,7 +22,7 @@ public class Main {
         Scanner scan = new Scanner(fr);
         int counter = 0;
         while (scan.hasNextLine() && counter < 100) {
-            var line = scan.nextLine();
+            String line = scan.nextLine();
             if(line.length() > 10) continue;
             counter++;
             goods.insert(nameFactory(line));
@@ -33,9 +33,9 @@ public class Main {
         scan = new Scanner(System.in);
         String answer = scan.nextLine();
         while (!answer.equals("E")) {
-            var splitAnswer = answer.split(" ");
+            String[] splitAnswer = answer.split(" ");
             if(splitAnswer.length != 2) continue;
-            var name = nameFactory(splitAnswer[1]);
+            char[] name = nameFactory(splitAnswer[1]);
             if(splitAnswer[0].equals("F")) {
                 bads.delete(name);
                 goods.insert(name);
@@ -50,7 +50,7 @@ public class Main {
                 if(goods.member(name)) {
                     System.out.println(splitAnswer[1] + " хороший");
                 }
-                else if (bads.member(name)) {
+                if (bads.member(name)) {
                     System.out.println(splitAnswer[1] + " плохой");
                 }
             }

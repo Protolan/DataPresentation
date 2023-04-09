@@ -21,6 +21,21 @@ public class Dictionary {
             }
             return true;
         }
+
+        public char[] getClearName() {
+            int counter = 0;
+            for (int i = 0; i < name.length; i++) {
+                if(this.name[i] == 0) {
+                    break;
+                }
+                counter++;
+            }
+            char[] clear = new char[counter];
+            for (int i = 0; i < counter; i++) {
+                clear[i] = this.name[i];
+            }
+            return clear;
+        }
     }
 
     // Количество классов для решения колизии
@@ -76,9 +91,9 @@ public class Dictionary {
         // Проверяем во время пробежки next на это имя и если имя найдется тогда удаляем элемент
         // Если у удаляемого элемента нет previous, тогда обнуляем элемент массива
         // Если есть, то просто предыдущий ссылается на next текущего
-        Node current = _array[index].next;
+        Node current = _array[index];
         while (current.next != null) {
-            if(current.compareNames(name)) {
+            if(current.next.compareNames(name)) {
                 current.next = current.next.next;
                 return;
             }
@@ -136,7 +151,7 @@ public class Dictionary {
             while (current != null) {
                 builder.append(counter);
                 builder.append(": ");
-                builder.append(current.name);
+                builder.append(current.getClearName());
                 builder.append("\n");
                 current = current.next;
                 counter++;
