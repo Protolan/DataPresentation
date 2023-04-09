@@ -1,19 +1,40 @@
 package Dictionary.OpenPlan;
 
+// Реализация открытого словаря
 public class Dictionary {
     private class Node {
         char[] name;
         Node next;
+
+        public Node(char[] name, Node next) {
+            this.name = name;
+            this.next = next;
+        }
+
+        public Node(char[] name) {
+            this.name = name;
+            next = null;
+        }
+
+        // Метод для сравнения имени, расчитан на работу массивов одной длины
+        public boolean compareNames(char[] name) {
+            // Так как массива одной длин просто по символьно проверяем на равенство
+            return true;
+        }
+
+
     }
 
-    // Количество классов для решения колизии
+    // Количество классов для решения коллизии
     private final int B;
+
     private final Node[] _array;
 
     public Dictionary(int maxCapacity, int classCount) {
+        // Нужен ли нам maxCapacity?
+        // Инициализируем количество классов и создаем массива равный кол-во классов
         B = classCount;
         _array = new Node[B];
-        // Инициализируем количество классов и создаем массива равный кол-во классов
     }
 
     // Вставить в хеш таблицу
@@ -27,7 +48,8 @@ public class Dictionary {
 
     public void delete(char[] name) {
         // Вычисляем хеш индекс через метод hashFunction
-        // Если элемент пуcтой, тогда return
+        // Если элемент пуcтой, тогда нечего удалять, return
+        // Проверям первый элемент
         // Если элемент не пустой, тогда идем по связному списку пока next элемент не будет равен null
         // Проверяем во время пробежки next на это имя и если имя найдется тогда удаляем элемент
         // Если у удаляемого элемента нет previous, тогда обнуляем элемент массива
@@ -43,21 +65,16 @@ public class Dictionary {
         return false;
     }
 
+    public void makeNull() {
+        // Пробегаемся по массиву и обнуляем все значения
+    }
+
     // Хеш-функция результат которой вернет нужный индекс в массиве
     private int hashFunction(char[] name) {
-        char sum = 0;
         // Пробегаемся по массиву char
         // Вопрос что лучше, бежать по массиву до конца и складывать включая возможные пустые символы
         // Или бежать по массиву пока не встретиться первый пустой символ или не дойдет до конца?
-        for (int i = 0; i < name.length; i++) {
-            sum += name[i];
-        }
-        return sum % B;
-    }
-
-
-    public void makenull() {
-        // Пробегаемся по массиву и обнуляем все значения
+        return 0;
     }
 
 }

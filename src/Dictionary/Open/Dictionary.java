@@ -15,6 +15,7 @@ public class Dictionary {
             next = null;
         }
 
+        // Метод для сравнения имени
         public boolean compareNames(char[] name) {
             for (int i = 0; i < name.length; i++) {
                 if(this.name[i] != name[i]) return false;
@@ -38,7 +39,7 @@ public class Dictionary {
         }
     }
 
-    // Количество классов для решения колизии
+    // Количество классов для решения коллизии
     private final int B;
 
     private final Node[] _array;
@@ -122,6 +123,13 @@ public class Dictionary {
         return false;
     }
 
+    public void makeNull() {
+        // Пробегаемся по массиву и обнуляем все значения
+        for (int i = 0; i < _array.length; i++) {
+            _array[i] = null;
+        }
+    }
+
     // Хеш-функция результат которой вернет нужный индекс в массиве
     private int hashFunction(char[] name) {
         char sum = 0;
@@ -135,12 +143,7 @@ public class Dictionary {
     }
 
 
-    public void makeNull() {
-        // Пробегаемся по массиву и обнуляем все значения
-        for (int i = 0; i < _array.length; i++) {
-            _array[i] = null;
-        }
-    }
+
 
     @Override
     public String toString() {
