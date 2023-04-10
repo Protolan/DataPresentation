@@ -270,48 +270,52 @@ public class Set {
 
     // Добавляет значение в множество, если его там нет, если нет ничего не делать
     public void insert(int value) {
-        Node closestNode = findClosest(value);
+        Node previousNode = findClosest(value);
         // Если список пустой или новое значение самое маленькое
-        if (closestNode == null) {
+        if (previousNode == null) {
             _head = new Node(value, _head);
             return;
         }
-        // Если уже есть в множестве возвращаем
-        if (closestNode.value == value) {
+        // Если уже есть в множестве ничего не делаем
+        if (previousNode.next != null && previousNode.next.value == value) {
             return;
         }
-        closestNode.next = new Node(value, closestNode.next);
+        // Если нет элемент, то вставляем следущим элементом
+        previousNode.next = new Node(value, previousNode.next);
     }
 
     // Удаляет значение из множества, если оно там есть, если нет ничего не делать
     public void delete(int value) {
         if(_head == null) return;
-        // Если элемент голова
+        // Если элемент голова, тогда просто заменяем
         if (_head.value == value) {
             _head = _head.next;
             return;
         }
-        Node previous = null;
-        Node current = _head;
-        while (current != null && current.value < value) {
-            previous = current;
-            current = current.next;
+        Node previousNode = findClosest(value);
+        if(previousNode.next != null && previousNode.next.value == value) {
+            previousNode.next = previousNode.next.next;
         }
-        if (current == null || current.value != value) {
-            return;
-        }
-        previous.next = current.next;
     }
 
+    // Обнуление
     public void makeNull() {
         _head = null;
     }
 
-    // Находит узел который находит это же значение или ближайшее меньшее его значение
+    // Находит узел который находит предыдущий элемент к этому значению
+    // Если следущий элемент найденного равен числу значит число найдено
+    // Может вернуть null, если нет головы(список пустой) или число
     private Node findClosest(int value) {
+        // Пробегаемся по связному списку
+        // Если текущее значение больше или равно числу возвращаем предыдущее к нему
+        // Если список закончился возвращаем предыдущий
         Node previous = null;
         Node current = _head;
-        while (current != null && current.value <= value) {
+        while (current != null) {
+            if(current.value >= value) {
+                return previous;
+            }
             previous = current;
             current = current.next;
         }
@@ -319,9 +323,11 @@ public class Set {
     }
 
     private boolean isMember(int value) {
-        Node closest = findClosest(value);
-        if (closest == null || closest.value != value) return false;
-        return true;
+        Node previousNode = findClosest(value);
+        if(previousNode.next != null && previousNode.next.value == value) {
+            return false;
+        }
+        return false;
     }
 
 
