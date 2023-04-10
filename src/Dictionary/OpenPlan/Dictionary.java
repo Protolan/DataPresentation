@@ -17,6 +17,7 @@ public class Dictionary {
         }
 
         // Метод для сравнения имени, расчитан на работу массивов одной длины
+        // Переопределить Equals
         public boolean compareNames(char[] name) {
             // Так как массива одной длин просто по символьно проверяем на равенство
             return true;

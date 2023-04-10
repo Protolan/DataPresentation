@@ -23,8 +23,8 @@ public class Set {
     }
 
     // Копирующий конструктор
-    private Set(Set set) {
-        copyFrom(set);
+    private Set(Node to, Node from) {
+        copyFrom(to, from);
     }
 
     public Set union(Set set) {
@@ -88,7 +88,6 @@ public class Set {
     // Присваивает новое множество в исходное множество
     public void assign(Set set) {
         // Вызываем метод copyFrom
-        copyFrom(set);
     }
 
     // Проверяет равны ли множества
@@ -134,10 +133,8 @@ public class Set {
         // Если список пустой, инициализируем новый tail, который ссылается сам на себя
         // Если значение больше хвоста(максимального), должен быть новый хвост, а старый сссылаеться на него
         // Ищем узел с нужным значением помощью findClosest
-        Node closestNode = findClosest(value);
         // Если уже есть в множестве, ничего не делаем
         // Иначе вставляем новый элемент после ближайшего меньшего значения
-        closestNode.next = new Node(value, closestNode.next);
     }
 
     // Удаляет значение из множества, если оно там есть, если нет ничего не делать
@@ -145,8 +142,7 @@ public class Set {
         // Если список пустой, ничего не делаем
         // Случай, если удаляемое значение - хвост
         // Если элемент единственный, то просто обнуляет хвост
-        // Иначе, ищем предыдущий, и обновляем значение хвоста
-        // Ищем узел, где находиться число, и одновременно храним его предыдущий элемент для замены
+        // Ищем узел с нужным значением помощью findClosest
         // Если не найден ничего не делаем
     }
 
@@ -158,32 +154,22 @@ public class Set {
     }
 
     // Находит узел который, находит это же значение или ближайшее меньшее его значение
-    private Node findClosest(int value) {
+    private Node findClosest(Node start, int value) {
         // Если значение равно значению хвоста, возвращаем хвост
-        if (_tail.value == value) return _tail;
-        Node previous = _tail;
-        Node current = _tail.next;
-        while (current != _tail && current.value <= value) {
-            previous = current;
-            current = current.next;
-        }
-        return previous;
+        return null;
     }
 
     // Определяет есть ли число в множестве
     private boolean isMember(int value) {
-        // Если хвост
-        if(_tail == null) return false;
-        // Вызываем метод findClosest для поиска узла с этим значением
-        Node closest = findClosest(value);
+        // Если список пустой - FALSE
+        // Вызываем метод findClosest от головы для поиска предыдущего узла с этим значением
         // Если список пустой или не найдее элемент с таким значением
-        if (closest.value != value) return false;
         // Если все хорошо, значит принадлежит
         return true;
     }
 
     // Копирует множество
-    private void copyFrom(Set set) {
+    private void copyFrom(Node start, Node end) {
         // Если копируемое множество пустое, то обнуляем список
         // Иначе инициализируем хвост и по узлам копируем взе значения
     }

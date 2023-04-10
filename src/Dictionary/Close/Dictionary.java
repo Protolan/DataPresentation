@@ -16,12 +16,26 @@ public class Dictionary {
         // Вычисляем хеш индекс
         int startIndex = hashFunction(name);
         int currentIndex = startIndex;
-        // Идем пока не найдем первый Null или USED обьект
+        // Идем пока не найдем первый Null
         // Проверят не сделали ли мы целый оборот (сравниваем текущий индекс с начальным), если да то место для вставки нет, выбросить исключение
-        while (_array[currentIndex] != null || _array[currentIndex] == USED) {
+        while (_array[currentIndex] != null) {
+            if(compareNames(name, _array[currentIndex])) return;
+            if(_array[currentIndex] == USED) {
+                int saveInput = currentIndex;
+                while (_array[currentIndex] != null) {
+                    if(compareNames(name, _array[currentIndex])) return;
+                    currentIndex = getNext(currentIndex);
+                    if (currentIndex == startIndex) {
+                       break;
+                    }
+                }
+                _array[saveInput] = name;
+                return;
+            }
             currentIndex = getNext(currentIndex);
             if (currentIndex == startIndex) throw new RuntimeException("Невозможно добавить еще элементов!");
         }
+
         _array[currentIndex] = name;
     }
 

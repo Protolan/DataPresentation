@@ -21,8 +21,13 @@ public class Set {
     }
 
     public Set(Set set) {
-        copyFrom(set);
+        this(set._head);
     }
+
+    public Set(Node node) {
+        copyFrom(node);
+    }
+
 
     public Set union(Set set) {
         // Если список этот же возвращает копию списка
@@ -210,21 +215,23 @@ public class Set {
     // Присваивает новое множество
     // Необходимо скопировать ячейки то есть создать новые ноды
     public void assign(Set set) {
-        copyFrom(set);
+        copyFrom(set._head);
     }
 
-    private void copyFrom(Set set) {
-        // Если множество пустое, то обнуляет список
-        if (set._head == null) {
+    private void copyFrom(Node fromNode) {
+        // Если узел Null, то обнуляем голову
+        if (fromNode == null) {
             _head = null;
             return;
         }
-        Node from = set._head;
-        _head = new Node(set._head.value, null);
+        // Иначе инициализируем голову и копируем поэлементно
+        // Мы не можем просто присвоить узел так как обьект
+        _head = new Node(fromNode.value, null);
         Node to = _head;
-        while (from.next != null) {
-            to.next = new Node(from.next.value, null);
-            from = from.next;
+        fromNode = fromNode.next;
+        while (fromNode != null) {
+            to.next = new Node(fromNode.value, null);
+            fromNode = fromNode.next;
             to = to.next;
         }
     }
