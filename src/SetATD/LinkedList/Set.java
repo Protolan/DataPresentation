@@ -3,7 +3,7 @@ package SetATD.LinkedList;
 import SetATD.Exceptions.SetException;
 
 public class Set {
-    private class Node {
+    private static class Node {
         public int value;
         public Node next;
 
@@ -21,27 +21,28 @@ public class Set {
     }
 
     public Set(Set set) {
-        this(set._head);
+        _head = null;
     }
 
-    public Set(Node node) {
-        copyFrom(node);
+
+    private Set(Node node) {
+        _head = getNodeCopy(node);
     }
 
 
     public Set union(Set set) {
         // Если список этот же возвращает копию списка
-        if (set == this) return new Set(set);
+        if (set == this) return new Set(set._head);
         // Если оба списка пустых возвращаем пустой список
         if (set._head == null && _head == null) {
             return new Set();
         }
         // Если кто из списка пустой, возвращаем копию непустого списка
         if (set._head == null) {
-            return new Set(set);
+            return new Set(set._head);
         }
         if (_head == null) {
-            return new Set(this);
+            return new Set(_head);
         }
         // Создаем новое множество их исходного множества
         // Пробегаемся по второму множеству пока не будут вставлены все элементы
@@ -215,34 +216,24 @@ public class Set {
     // Присваивает новое множество
     // Необходимо скопировать ячейки то есть создать новые ноды
     public void assign(Set set) {
-        copyFrom(set._head);
+        _head = getNodeCopy(set._head);
     }
 
-    private void copyFrom(Node fromNode) {
-        // Если узел Null, то обнуляем голову
-        if (fromNode == null) {
-            _head = null;
-            return;
-        }
-        // Иначе инициализируем голову и копируем поэлементно
-        // Мы не можем просто присвоить узел так как обьект
-        _head = new Node(fromNode.value, null);
-        Node to = _head;
-        fromNode = fromNode.next;
-        while (fromNode != null) {
-            to.next = new Node(fromNode.value, null);
-            fromNode = fromNode.next;
-            to = to.next;
-        }
-    }
 
+
+    // Проверка множества на равенство
     public boolean equal(Set set) {
         Node set1Current = _head;
         Node set2Current = set._head;
-        while (set1Current != null && set2Current != null && set1Current.value == set2Current.value) {
+        while (set1Current != null && set2Current != null) {
+            // Сразу возвращаем если нашли неравные значения
+            if(set1Current.value != set2Current.value) {
+                return false;
+            }
             set1Current = set1Current.next;
             set2Current = set2Current.next;
         }
+        // Если оба списка закончились значит она оба равны null
         return set1Current == set2Current;
     }
 
@@ -277,7 +268,7 @@ public class Set {
 
     // Добавляет значение в множество, если его там нет, если нет ничего не делать
     public void insert(int value) {
-        Node previousNode = findClosest(value);
+        Node previousNode = findClosest(_head, value);
         // Если список пустой или новое значение самое маленькое
         if (previousNode == null) {
             _head = new Node(value, _head);
@@ -294,12 +285,12 @@ public class Set {
     // Удаляет значение из множества, если оно там есть, если нет ничего не делать
     public void delete(int value) {
         if(_head == null) return;
-        // Если элемент голова, тогда просто заменяем
+        // Проверка на первое значение
         if (_head.value == value) {
             _head = _head.next;
             return;
         }
-        Node previousNode = findClosest(value);
+        Node previousNode = findClosest(_head, value);
         if(previousNode.next != null && previousNode.next.value == value) {
             previousNode.next = previousNode.next.next;
         }
@@ -310,15 +301,43 @@ public class Set {
         _head = null;
     }
 
+    public boolean isIntersect(Set set) {
+        return false;
+    }
+
+
+    private boolean isMember(int value) {
+        Node previousNode = findClosest(_head,value);
+        if(previousNode.next != null && previousNode.next.value == value) {
+            return false;
+        }
+        return false;
+    }
+
+    private static Node getNodeCopy(Node startNode) {
+        if(startNode == null) return null;
+        // Иначе инициализируем голову и копируем поэлементно
+        // Мы не можем просто присвоить узел так как обьект
+        Node copyRoot = new Node(startNode.value, null);
+        Node to = copyRoot;
+        startNode = startNode.next;
+        while (startNode != null) {
+            to.next = new Node(startNode.value, null);
+            startNode = startNode.next;
+            to = to.next;
+        }
+        return copyRoot;
+    }
+
     // Находит узел который находит предыдущий элемент к этому значению
     // Если следущий элемент найденного равен числу значит число найдено
-    // Может вернуть null, если нет головы(список пустой) или число
-    private Node findClosest(int value) {
+    // Может вернуть null, если нет головы(список пустой)
+    private static Node findClosest(Node startNode, int value) {
         // Пробегаемся по связному списку
         // Если текущее значение больше или равно числу возвращаем предыдущее к нему
         // Если список закончился возвращаем предыдущий
         Node previous = null;
-        Node current = _head;
+        Node current = startNode;
         while (current != null) {
             if(current.value >= value) {
                 return previous;
@@ -327,14 +346,6 @@ public class Set {
             current = current.next;
         }
         return previous;
-    }
-
-    private boolean isMember(int value) {
-        Node previousNode = findClosest(value);
-        if(previousNode.next != null && previousNode.next.value == value) {
-            return false;
-        }
-        return false;
     }
 
 
