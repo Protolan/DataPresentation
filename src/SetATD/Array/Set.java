@@ -111,21 +111,24 @@ public class Set {
         // Если множества не пересекаются, то возвращаем это же множество
         if (rangeNotInter(_range, set._range)) new Set(set);
         // Если это же множество, то возвращаем пустое множество с этим же диапазоном
-        Set differenceSet = new Set(new Range(_range.start, _range.end), _array.length);
+        Set differenceSet = new Set(new Range(set._range.start, set._range.end), set._array.length);
         if (set == this) return differenceSet;
 
         // Копируем значения первого массива
-        for (int i = 0; i < _array.length; i++) {
-            differenceSet._array[i] = _array[i];
+        for (int i = 0; i < set._array.length; i++) {
+            differenceSet._array[i] = set._array[i];
         }
 
-        //Вычисляем индекс массива для выполнение побитовой операции
-        int startIndex = findIndex(set._range.start);
-        int endIndex = Math.min(set._array.length, _array.length);
+        int x = Math.max(_range.start, set._range.start);
 
-        // Находим те биты которых нет во втором множестве
+        //Вычисляем индексы массива для выполнение побитовой операции
+        int startIndex1 = findIndex(x);
+        int startIndex2 = set.findIndex(x);
+        int endIndex = Math.min(set._array.length - startIndex2, _array.length - startIndex1);
+
+        // Находим те биты которых нет исходном множестве множестве
         for (int i = 0; i < endIndex; i++) {
-            differenceSet._array[startIndex + i] = (_array[startIndex + i] & ~set._array[i]);
+            differenceSet._array[startIndex2 + i] = (set._array[startIndex2 + i] & ~_array[startIndex1 + i]);
         }
         return differenceSet;
     }
