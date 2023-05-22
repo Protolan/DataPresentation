@@ -119,6 +119,7 @@ public class Set {
             differenceSet._array[i] = set._array[i];
         }
 
+        // Вычисляем общее начало
         int x = Math.max(_range.start, set._range.start);
 
         //Вычисляем индексы массива для выполнение побитовой операции
@@ -138,7 +139,6 @@ public class Set {
         // Мы не можем соединить одно и тоже множество
         if (set == this) return new Set(set);
         // Мы не может соединить перескающиеся множества
-        if (haveCommonElements(set)) return this;
         // Вычисляем общий диапазон
         int x = Math.min(_range.start, set._range.start);
         int y = Math.max(_range.end, set._range.end);
@@ -270,6 +270,23 @@ public class Set {
         }
     }
 
+    public boolean haveCommonElements(Set set) {
+        if(rangeNotInter(_range, set._range)) return false;
+        // Находим диапазон пересечения
+        Range interRange = new Range(Math.max(_range.start, set._range.start), Math.min(_range.end, set._range.end));
+        // Вычисляем смещения индексов
+        int startIndex1 = findIndex(interRange.start);
+        int startIndex2 = set.findIndex(interRange.start);
+
+        int rangeLength = getArrayElementCount(interRange);
+
+        // Выполняем побитовое умножение
+        for (int i = 0; i < rangeLength; i++) {
+            if((_array[startIndex1 + i] & set._array[startIndex2 + i]) != 0) return true;
+        }
+        return false;
+    }
+
     // Создает массив из диапазона
     private int getArrayElementCount(Range range) {
         int len;
@@ -335,22 +352,7 @@ public class Set {
         return (_array[position.index] & (1 << 31 - position.bit)) != 0;
     }
 
-    private boolean haveCommonElements(Set set) {
-        if(rangeNotInter(_range, set._range)) return false;
-        // Находим диапазон пересечения
-        Range interRange = new Range(Math.max(_range.start, set._range.start), Math.min(_range.end, set._range.end));
-        // Вычисляем смещения индексов
-        int startIndex1 = findIndex(interRange.start);
-        int startIndex2 = set.findIndex(interRange.start);
 
-        int rangeLength = getArrayElementCount(interRange);
-
-        // Выполняем побитовое умножение
-        for (int i = 0; i < rangeLength; i++) {
-            if((_array[startIndex1 + i] & set._array[startIndex2 + i]) != 0) return true;
-        }
-        return false;
-    }
 
     private int getNumberFromPosition(int index, int bit) {
         // Находим число которое находится в первой ячейке массива на 0 бите
