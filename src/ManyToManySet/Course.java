@@ -5,6 +5,7 @@ public class Course extends Link {
     public final int id;
     public MultiLink link;
 
+    //По умолчанию запись ссылаеться на саму себя
     public Course(int number) {
         this.id = number;
         link = null;

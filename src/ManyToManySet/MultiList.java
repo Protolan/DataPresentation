@@ -49,7 +49,7 @@ public class MultiList {
         }
         return resultName;
     }
-    
+
 
 
     // Добавляем студента на курс
@@ -80,7 +80,7 @@ public class MultiList {
         course.link = newLink;
     }
 
-    // Убираем студенты с курса
+    // Убираем студента с курса
     public void removeStudentCourse(String studentName, int courseId) {
         // Проверяем есть ли такой набор значений
         Course course = _courseList.get(courseId);
@@ -90,32 +90,41 @@ public class MultiList {
         // Если нет записей у студента или курса значит студен нет на этом курсе
         if(course.link == null || student.link == null) return;
         // Чтобы удалить регистрационную запись, нам нужно найти тех кто на нее ссылается
+        MultiLink studentPreviousLink = null;
         MultiLink studentCurrentLink = student.link;
         while(true) {
-            // Если не нашли не нашли нужный курс выходим
-            if(studentCurrentLink.isConcrete()) return;
-            var nextLink = (MultiLink) studentCurrentLink.studentLink;
             // Проверяем нашли ли мы нужный нам курс, если наши значит выходим
-            if(nextLink.courseLink.isConcrete() && nextLink.courseLink == course) {
+            if(studentCurrentLink.courseLink.isConcrete() && studentCurrentLink.courseLink == course) {
                 break;
             }
-            studentCurrentLink = nextLink;
+            if(studentCurrentLink.studentLink.isConcrete()) return;
+            studentPreviousLink = studentCurrentLink;
+            studentCurrentLink = (MultiLink) studentCurrentLink.studentLink;
         }
+        MultiLink coursePreviousLink = null;
         MultiLink courseCurrentLink = course.link;
         while(true) {
-            // Если не нашли не нашли нужного студента выходим
-            if(courseCurrentLink.isConcrete()) return;
-            var nextLink = (MultiLink) courseCurrentLink.courseLink;
-            // Проверяем нашли ли мы нужного нам студента, если наши значит выходим
-            if(nextLink.studentLink.isConcrete() && nextLink.studentLink == course) {
+            // Проверяем нашли ли мы нужный нам курс, если наши значит выходим
+            if(courseCurrentLink.studentLink.isConcrete() && courseCurrentLink.studentLink == student) {
                 break;
             }
-            courseCurrentLink = nextLink;
+            if(courseCurrentLink.courseLink.isConcrete()) return;
+            coursePreviousLink = courseCurrentLink;
+            courseCurrentLink = (MultiLink) courseCurrentLink.courseLink;
         }
         // Теперь переназначаем ссылки
-        courseCurrentLink.courseLink =  ((MultiLink)courseCurrentLink.courseLink).courseLink;
-        studentCurrentLink.studentLink = ((MultiLink)studentCurrentLink.studentLink).studentLink;
-
+        if(studentPreviousLink == null) {
+            student.link = null;
+        }
+        else {
+            studentPreviousLink.studentLink = studentCurrentLink.studentLink;
+        }
+        if(coursePreviousLink == null) {
+            course.link = null;
+        }
+        else {
+            coursePreviousLink.courseLink = courseCurrentLink.courseLink;
+        }
     }
 
     // Удалить студента со всех курсов
@@ -137,6 +146,7 @@ public class MultiList {
         // Проверяем есть ли такой набор значений
         Course course = _courseList.get(courseId);
         if (course == null) return;
+        if(course.link == null) return;
     }
 
     // Выводит список курсов студента
