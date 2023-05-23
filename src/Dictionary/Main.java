@@ -25,7 +25,7 @@ public class Main {
         FileReader fr= new FileReader(FILE_NAME);
         Scanner scan = new Scanner(fr);
         int counter = 0;
-        while (scan.hasNextLine() && counter < 100) {
+        while (scan.hasNextLine() && counter < CAPACITY) {
             String line = scan.nextLine();
             if(line.length() > 10) continue;
             counter++;

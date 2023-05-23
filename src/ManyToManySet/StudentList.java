@@ -1,15 +1,17 @@
-package Dictionary.Close;
+package ManyToManySet;
 
-public class Dictionary {
+public class StudentList {
     // Значение, которое указывает
-    private static final char[] USED = {0};
-    private final char[][] _array;
+    private static final Student USED = new Student(null);
+    private final Student[] _array;
 
-    public Dictionary(int capacity, int classCount) {
+    public StudentList(int capacity) {
         //Инициализируем массив длиной maxCapacity и количество классов
         // Создаем
-        _array = new char[capacity][];
+        _array = new Student[capacity];
     }
+
+
 
     // Вставить в хеш таблицу
     public void insert(char[] name) {
@@ -20,7 +22,7 @@ public class Dictionary {
         // Проверят не сделали ли мы целый оборот (сравниваем текущий индекс с начальным), если да то место для вставки нет, выбросить исключение
         while (_array[currentIndex] != null) {
             // Если есть такой элемент уже есть то выйти
-            if(compareNames(name, _array[currentIndex])) return;
+            if(compareNames(name, _array[currentIndex].name)) return;
             // Если текущий индекс использованный, тогда сохраняем положения
             // Дальше нам нужно убедиться, что такого элемента уже нет в списке
             // Проверяем на этот элемент, пока не встретим ни разу не использовавашиеся или список закончиться
@@ -28,20 +30,20 @@ public class Dictionary {
             if(_array[currentIndex] == USED) {
                 int saveInput = currentIndex;
                 while (_array[currentIndex] != null) {
-                    if(compareNames(name, _array[currentIndex])) return;
+                    if(compareNames(name, _array[currentIndex].name)) return;
                     currentIndex = getNext(currentIndex);
                     if (currentIndex == startIndex) {
-                       break;
+                        break;
                     }
                 }
-                _array[saveInput] = name;
+                _array[saveInput] = new Student(name);
                 return;
             }
             currentIndex = getNext(currentIndex);
             if (currentIndex == startIndex) throw new RuntimeException("Невозможно добавить еще элементов!");
         }
 
-        _array[currentIndex] = name;
+        _array[currentIndex] = new Student(name);
     }
 
     public void delete(char[] name) {
@@ -54,7 +56,7 @@ public class Dictionary {
         // Если имя совпало присвоить текущему значению USED и выйти
         // Проверяем каждую итерацию не сделали ли мы целый оборот(сравниваем текущий индекс с начальным), тогда элемент не найден
         while (_array[currentIndex] != null) {
-            if (_array[currentIndex] != USED && compareNames(_array[currentIndex], name)) {
+            if (_array[currentIndex] != USED && _array[currentIndex].name == name) {
                 _array[currentIndex] = USED;
                 return;
             }
@@ -78,7 +80,7 @@ public class Dictionary {
         // Проверяем каждую итерацию не сделали ли мы целый оборот(сравниваем текущий индекс с начальным), тогда элемент не найден
         while (_array[currentIndex] != null) {
             System.out.println(currentIndex);
-            if (_array[currentIndex] != USED && compareNames(_array[currentIndex], name)) {
+            if (_array[currentIndex] != USED && _array[currentIndex].name == name) {
                 return true;
             }
             currentIndex = getNext(currentIndex);
@@ -88,6 +90,29 @@ public class Dictionary {
         }
         return false;
     }
+
+    public Student get(char[] name) {
+        // Вычисляем хеш индекс
+        int startIndex = hashFunction(name);
+        int currentIndex = startIndex;
+        // Идем пока не будет null обьект, если дойдем до конца возвращаем false
+        // Если текущий элемент использованный значим пропускаем
+        // Если нет проверяем на совпадение имен
+        // Если имя совпало элемент найден
+        // Проверяем каждую итерацию не сделали ли мы целый оборот(сравниваем текущий индекс с начальным), тогда элемент не найден
+        while (_array[currentIndex] != null) {
+            System.out.println(currentIndex);
+            if (_array[currentIndex] != USED && _array[currentIndex].name == name) {
+                return _array[currentIndex];
+            }
+            currentIndex = getNext(currentIndex);
+            if (currentIndex == startIndex) {
+                return null;
+            }
+        }
+        return null;
+    }
+
 
     public void makeNull() {
         // Пробегаемся по массиву очищаем
@@ -122,39 +147,5 @@ public class Dictionary {
         }
         return true;
     }
-
-
-    //ВЫВОД
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        int counter = 1;
-        for (int i = 0; i < _array.length; i++) {
-            if (_array[i] == null || _array[i] == USED) continue;
-            builder.append(counter);
-            builder.append(": ");
-            builder.append(getClearName(_array[i]));
-            builder.append("\n");
-            counter++;
-        }
-        return builder.toString();
-    }
-
-    private char[] getClearName(char[] name) {
-        int counter = 0;
-        for (int i = 0; i < name.length; i++) {
-            if (name[i] == 0) {
-                break;
-            }
-            counter++;
-        }
-        char[] clear = new char[counter];
-        for (int i = 0; i < counter; i++) {
-            clear[i] = name[i];
-        }
-        return clear;
-    }
-
 
 }

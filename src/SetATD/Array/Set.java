@@ -134,8 +134,6 @@ public class Set {
     public Set merge(Set set) {
         // Мы не можем соединить одно и тоже множество
         if (set == this) return new Set(set);
-        // Мы не может соединить перескающиеся множества
-        if (haveCommonElements(set)) return this;
         // Вычисляем общий диапазон
         int x = Math.min(_range.start, set._range.start);
         int y = Math.max(_range.end, set._range.end);
