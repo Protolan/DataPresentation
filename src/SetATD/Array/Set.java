@@ -111,21 +111,25 @@ public class Set {
         // Если множества не пересекаются, то возвращаем это же множество
         if (rangeNotInter(_range, set._range)) new Set(set);
         // Если это же множество, то возвращаем пустое множество с этим же диапазоном
-        Set differenceSet = new Set(new Range(_range.start, _range.end), _array.length);
+        Set differenceSet = new Set(new Range(set._range.start, set._range.end), set._array.length);
         if (set == this) return differenceSet;
 
         // Копируем значения первого массива
-        for (int i = 0; i < _array.length; i++) {
-            differenceSet._array[i] = _array[i];
+        for (int i = 0; i < set._array.length; i++) {
+            differenceSet._array[i] = set._array[i];
         }
 
-        //Вычисляем индекс массива для выполнение побитовой операции
-        int startIndex = findIndex(set._range.start);
-        int endIndex = Math.min(set._array.length, _array.length);
+        // Вычисляем общее начало
+        int x = Math.max(_range.start, set._range.start);
 
-        // Находим те биты которых нет во втором множестве
+        //Вычисляем индексы массива для выполнение побитовой операции
+        int startIndex1 = findIndex(x);
+        int startIndex2 = set.findIndex(x);
+        int endIndex = Math.min(set._array.length - startIndex2, _array.length - startIndex1);
+
+        // Находим те биты которых нет исходном множестве множестве
         for (int i = 0; i < endIndex; i++) {
-            differenceSet._array[startIndex + i] = (_array[startIndex + i] & ~set._array[i]);
+            differenceSet._array[startIndex2 + i] = (set._array[startIndex2 + i] & ~_array[startIndex1 + i]);
         }
         return differenceSet;
     }
@@ -134,6 +138,7 @@ public class Set {
     public Set merge(Set set) {
         // Мы не можем соединить одно и тоже множество
         if (set == this) return new Set(set);
+        // Мы не может соединить перескающиеся множества
         // Вычисляем общий диапазон
         int x = Math.min(_range.start, set._range.start);
         int y = Math.max(_range.end, set._range.end);
@@ -265,6 +270,23 @@ public class Set {
         }
     }
 
+    public boolean haveCommonElements(Set set) {
+        if(rangeNotInter(_range, set._range)) return false;
+        // Находим диапазон пересечения
+        Range interRange = new Range(Math.max(_range.start, set._range.start), Math.min(_range.end, set._range.end));
+        // Вычисляем смещения индексов
+        int startIndex1 = findIndex(interRange.start);
+        int startIndex2 = set.findIndex(interRange.start);
+
+        int rangeLength = getArrayElementCount(interRange);
+
+        // Выполняем побитовое умножение
+        for (int i = 0; i < rangeLength; i++) {
+            if((_array[startIndex1 + i] & set._array[startIndex2 + i]) != 0) return true;
+        }
+        return false;
+    }
+
     // Создает массив из диапазона
     private int getArrayElementCount(Range range) {
         int len;
@@ -330,22 +352,7 @@ public class Set {
         return (_array[position.index] & (1 << 31 - position.bit)) != 0;
     }
 
-    private boolean haveCommonElements(Set set) {
-        if(rangeNotInter(_range, set._range)) return false;
-        // Находим диапазон пересечения
-        Range interRange = new Range(Math.max(_range.start, set._range.start), Math.min(_range.end, set._range.end));
-        // Вычисляем смещения индексов
-        int startIndex1 = findIndex(interRange.start);
-        int startIndex2 = set.findIndex(interRange.start);
 
-        int rangeLength = getArrayElementCount(interRange);
-
-        // Выполняем побитовое умножение
-        for (int i = 0; i < rangeLength; i++) {
-            if((_array[startIndex1 + i] & set._array[startIndex2 + i]) != 0) return true;
-        }
-        return false;
-    }
 
     private int getNumberFromPosition(int index, int bit) {
         // Находим число которое находится в первой ячейке массива на 0 бите

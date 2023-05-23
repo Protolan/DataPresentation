@@ -18,9 +18,9 @@ public class Test {
         set2.printSet();
         System.out.println(set1.equal(set2));
         set1.delete(-1);
-        set1.printSet();
         set2.delete(-15);
         set2.insert(35);
+        set1.printSet();
         set2.printSet();
         System.out.println(set2.equal(set1));
         System.out.println("Min: " + set1.min());
@@ -28,12 +28,18 @@ public class Test {
         System.out.println(set1.member(35));
         System.out.println(set2.member(35));
         set1.find(set2, 35).printSet();
-        var union = set1.union(set2);
-        var intersection = set1.intersection(set2);
+        set1.printSet();
+        set2.printSet();
+        var union = set2.union(set1);
+        var difference = set2.difference(set1);
+        var intersection = set2.intersection(set1);
+        System.out.println("Union");
         union.printSet();
+        System.out.println("Difference");
+        difference.printSet();
+        System.out.println("Intersection");
         intersection.printSet();
     }
-
 
 
 }

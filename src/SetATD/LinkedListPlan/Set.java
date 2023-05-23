@@ -89,10 +89,19 @@ public class Set {
     }
 
     public boolean equal(Set set) {
-        // Пробегается паралельно по двум спискам пока кто либо и них не станет пустым
-        // Кажду итерация проверяем на равенство, если хотя бы один не равен, то возвращаем false
+        // Пробегается параллельно по двум спискам пока кто-либо и них не станет пустым
+        // Каждую итерация проверяем на равенство, если хотя бы один не равен, то возвращаем false
         // Оба списка должны были закончиться, проверяем что они оба равны null
-        return false;
+        Node set1Current = _head;
+        Node set2Current = set._head;
+        while (set1Current != null && set2Current != null) {
+            if(set1Current.value != set2Current.value) {
+                return false;
+            }
+            set1Current = set1Current.next;
+            set2Current = set2Current.next;
+        }
+        return set1Current == set2Current;
     }
 
     public Set find(Set set, int value) {
@@ -149,8 +158,41 @@ public class Set {
     private Node findValueLocation(Node start, int value) {
         // Пробегаемся по связному списку
         // Если текущее значение больше или равно числу возвращаем предыдущее к нему
-        // Если список закончился возвращаем предыдущий
-        return null;
+        // Получается, если значение не найден, вернётся последний элемент списка(value.next == null)
+        Node previous = null;
+        Node current = start;
+        while (current != null) {
+            if(current.value >= value) {
+                return previous;
+            }
+            previous = current;
+            current = current.next;
+        }
+        return previous;
+    }
+
+
+
+    // Проверяет есть ли общие элементы
+    public boolean haveCommonElements(Set set) {
+        // Проверяем голову списков
+        // Пробегаемся по первому связному списку, и используем findValueLocation с каждым элементом второго списка
+        // Пока next найденного элемента не будет равен искому числу, это будет означать, что списки имеет один общий элемент
+        // Каждую новую итерацию мы будем начинать с того элемента, который вернут findValueLocation
+        // Если найденный элемент равен
+        // Если кто-либо из списков закончился возвращаем false
+        if(set == this) return true;
+        if (set._head == null || _head == null) {
+            return false;
+        }
+        Node set1Current = _head;
+        Node set2Current = set._head;
+        while(set1Current.next != null && set2Current != null) {
+            if(set1Current.next.value == set2Current.value) return true;
+            set1Current = findValueLocation(set1Current, set2Current.value);
+            set2Current = set2Current.next;
+        }
+        return false;
     }
 
 
