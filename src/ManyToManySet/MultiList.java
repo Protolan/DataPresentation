@@ -56,9 +56,15 @@ public class MultiList {
     public void addStudentCourse(String studentName, int courseId) {
         // Проверяем есть ли такой набор значений
         Course course = _courseList.get(courseId);
-        if (course == null) return;
+        if (course == null) {
+            System.out.println("Курса " + courseId + " не существует");
+            return;
+        }
         Student student = _studentList.get(nameFactory(studentName));
-        if (student == null) return;
+        if (student == null) {
+            System.out.println("Cтудента + " + studentName + " не существует");
+            return;
+        }
         // Если нет ни одной записи у студента или курса, значит этого студента нет на курсе
         // Создаем новую ссылку
         if (course.link.isConcrete() || student.link.isConcrete()) {
@@ -78,6 +84,7 @@ public class MultiList {
             }
             currentLink =  multiLink.courseLink;
         }
+
         // Если прошли полностью до курса, значит значение не было найдено, вставляем запись вначало студента и курса
         MultiLink newLink = new MultiLink(student.link, course.link);
         course.link = newLink;
@@ -86,75 +93,101 @@ public class MultiList {
 
     // Убираем студента с курса
     public void removeStudentCourse(String studentName, int courseId) {
-//        // Проверяем есть ли такой набор значений
-//        Course course = _courseList.get(courseId);
-//        if (course == null) return;
-//        Student student = _studentList.get(nameFactory(studentName));
-//        if (student == null) return;
-//        // Если нет записей у студента или курса значит студен нет на этом курсе
-//        if(course.link == null || student.link == null) return;
-//        // Чтобы удалить регистрационную запись, нам нужно найти тех кто на нее ссылается
-//        MultiLink studentPreviousLink = null;
-//        MultiLink studentCurrentLink = student.link;
-//        while(true) {
-//            // Проверяем нашли ли мы нужный нам курс, если наши значит выходим
-//            if(studentCurrentLink.courseLink.isConcrete() && studentCurrentLink.courseLink == course) {
-//                break;
-//            }
-//            if(studentCurrentLink.studentLink.isConcrete()) return;
-//            studentPreviousLink = studentCurrentLink;
-//            studentCurrentLink = (MultiLink) studentCurrentLink.studentLink;
-//        }
-//        MultiLink coursePreviousLink = null;
-//        MultiLink courseCurrentLink = course.link;
-//        while(true) {
-//            // Проверяем нашли ли мы нужный нам курс, если наши значит выходим
-//            if(courseCurrentLink.studentLink.isConcrete() && courseCurrentLink.studentLink == student) {
-//                break;
-//            }
-//            if(courseCurrentLink.courseLink.isConcrete()) return;
-//            coursePreviousLink = courseCurrentLink;
-//            courseCurrentLink = (MultiLink) courseCurrentLink.courseLink;
-//        }
-//        // Теперь переназначаем ссылки
-//        if(studentPreviousLink == null) {
-//            student.link = null;
-//        }
-//        else {
-//            studentPreviousLink.studentLink = studentCurrentLink.studentLink;
-//        }
-//        if(coursePreviousLink == null) {
-//            course.link = null;
-//        }
-//        else {
-//            coursePreviousLink.courseLink = courseCurrentLink.courseLink;
-//        }
+        // Проверяем есть ли такой набор значений
+        Course course = _courseList.get(courseId);
+        if (course == null) {
+            System.out.println("Курса " + courseId + " не существует");
+            return;
+        }
+
+        Student student = _studentList.get(nameFactory(studentName));
+        if (student == null) {
+            System.out.println("Cтудента + " + studentName + " не существует");
+            return;
+        }
+        // Если нет ни одной записи у студента или курса, значит этого студента нет на курсе
+        if(course.link.isConcrete() || student.link.isConcrete()) {
+            System.out.println("Студент " + studentName + " не записан на курс " + courseId + "!");
+            return;
+        }
+        // Делаем обход со стороны студента, чтобы найти нужную мультссылку на студента
+        // Чтобы удалить студента, нужно чтобы все элементы которые ссылается на нее, ссылались на следущую ссылку
+        Link previousStudentLink = student;
+        Link currentStudentLink = student.link;
+        while (!currentStudentLink.isConcrete()) {
+            MultiLink multiLink = (MultiLink) currentStudentLink;
+            previousStudentLink = currentStudentLink;
+            // Проверяем, есть ли этот студент уже на этом курсе, если есть то выходим
+            if (multiLink.courseLink.isConcrete() && multiLink.courseLink == course) {
+                break;
+            }
+            currentStudentLink =  multiLink.studentLink;
+        }
+        // Если не нашелся у этого курса студента, значит нечего удалять
+        if(currentStudentLink.isConcrete()) {
+            System.out.println("Студент " + studentName + " не записан на курс " + courseId + "!");
+            return;
+        }
+        Link previousCourseLink = course;
+        MultiLink currentCourseLink = (MultiLink) course.link;
+        // Теперь ищем предыдущий узел со стороны курс, теперь мы знаем, что он точно есть проверять не нужно
+        while (!currentCourseLink.isConcrete()) {
+            previousCourseLink = currentCourseLink;
+            if(currentCourseLink.studentLink.isConcrete() && currentCourseLink.studentLink == student) {
+                break;
+            }
+            currentCourseLink = (MultiLink) currentCourseLink.courseLink;
+        }
+
+        if(previousCourseLink.isConcrete()) {
+            course.link = currentCourseLink.courseLink;
+        }
+        else {
+            ((MultiLink) previousCourseLink).courseLink = currentCourseLink.courseLink;
+        }
+        if(previousStudentLink.isConcrete()) {
+            student.link = ((MultiLink) currentStudentLink).studentLink;
+        }
+        else {
+            ((MultiLink) previousStudentLink).studentLink = ((MultiLink) currentStudentLink).studentLink;
+        }
+
     }
 
     // Удалить студента со всех курсов
     public void removeStudent(String studentName) {
         // Проверяем есть ли такой набор значений
         Student student = _studentList.get(nameFactory(studentName));
-        if (student == null) return;
+        if (student == null) {
+            System.out.println("Cтудента + " + studentName + " не существует");
+            return;
+        }
     }
 
     // Удаляем все студентов с курса
     public void removeCourse(int courseId) {
         // Проверяем есть ли такой набор значений
         Course course = _courseList.get(courseId);
-        if (course == null) return;
+        if (course == null) {
+            System.out.println("Курса " + courseId + " не существует");
+            return;
+        }
     }
 
     // Выводит список студентов курса
     public void printStudentsOfCourse(int courseId) {
         // Проверяем есть ли такой набор значений
         Course course = _courseList.get(courseId);
-        if (course == null) return;
+        if (course == null) {
+            System.out.println("Курса " + courseId + " не существует");
+            return;
+        }
         // Если нет записей, значит нет студентов
         if(course.link.isConcrete()) {
-            System.out.println("На курсе нет студентов");
+            System.out.println("На курсе " + courseId + " нет студентов");
+            return;
         }
-        System.out.println("Студенты на курсе: ");
+        System.out.println("Студенты на курсе " + courseId + ": ");
         // Начинаем обход со стороны курса
         // Идем до того момента пока текущая ссылка не будет конкретной
         // То есть до момента когда мы вернемся к этому же курсу
@@ -174,17 +207,23 @@ public class MultiList {
     public void printCoursesOfStudent(String studentName) {
         // Проверяем есть ли такой набор значений
         Student student = _studentList.get(nameFactory(studentName));
-        if (student == null) return;
-        // Если нет записей, значит студен не записан не на один курс
-        if(student.link == null) {
-            System.out.println("У студента не курсов");
+        if (student == null) {
+            System.out.println("Cтудента + " + studentName + " не существует");
+            return;
         }
-        System.out.println("Курсы студента: ");
+        // Если нет записей, значит студен не записан не на один курс
+        if(student.link.isConcrete()) {
+            System.out.println("У студента " + studentName + " нет курсов");
+            return;
+        }
+        System.out.println("Курсы студента " + studentName + ": ");
         // Идем до того момента пока текущая ссылка не будет конкретной
         // То есть до момента когда мы вернемся к этому же студенту
         Link currentLink = student.link;
         while (!currentLink.isConcrete()) {
+
             MultiLink multiLink = (MultiLink) currentLink;
+
             // Выводим курс
             if (multiLink.courseLink.isConcrete()) {
                 Course course = (Course) multiLink.courseLink;

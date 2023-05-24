@@ -56,7 +56,7 @@ public class StudentList {
         // Если имя совпало присвоить текущему значению USED и выйти
         // Проверяем каждую итерацию не сделали ли мы целый оборот(сравниваем текущий индекс с начальным), тогда элемент не найден
         while (_array[currentIndex] != null) {
-            if (_array[currentIndex] != USED && _array[currentIndex].name == name) {
+            if (_array[currentIndex] != USED && compareNames(name, _array[currentIndex].name)) {
                 _array[currentIndex] = USED;
                 return;
             }
@@ -80,7 +80,7 @@ public class StudentList {
         // Проверяем каждую итерацию не сделали ли мы целый оборот(сравниваем текущий индекс с начальным), тогда элемент не найден
         while (_array[currentIndex] != null) {
             System.out.println(currentIndex);
-            if (_array[currentIndex] != USED && _array[currentIndex].name == name) {
+            if (_array[currentIndex] != USED && compareNames(name, _array[currentIndex].name)) {
                 return true;
             }
             currentIndex = getNext(currentIndex);
@@ -101,8 +101,7 @@ public class StudentList {
         // Если имя совпало элемент найден
         // Проверяем каждую итерацию не сделали ли мы целый оборот(сравниваем текущий индекс с начальным), тогда элемент не найден
         while (_array[currentIndex] != null) {
-            System.out.println(currentIndex);
-            if (_array[currentIndex] != USED && _array[currentIndex].name == name) {
+            if (_array[currentIndex] != USED && compareNames(name, _array[currentIndex].name)) {
                 return _array[currentIndex];
             }
             currentIndex = getNext(currentIndex);

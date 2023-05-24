@@ -34,14 +34,14 @@ public class CourseList {
                         break;
                     }
                 }
-                _array[saveInput] = new Course(0);
+                _array[saveInput] = new Course(id);
                 return;
             }
             currentIndex = getNext(currentIndex);
             if (currentIndex == startIndex) throw new RuntimeException("Невозможно добавить еще элементов!");
         }
 
-        _array[currentIndex] = new Course(0);
+        _array[currentIndex] = new Course(id);
     }
 
     public void delete(int id) {
@@ -99,7 +99,6 @@ public class CourseList {
         // Если имя совпало элемент найден
         // Проверяем каждую итерацию не сделали ли мы целый оборот(сравниваем текущий индекс с начальным), тогда элемент не найден
         while (_array[currentIndex] != null) {
-            System.out.println(currentIndex);
             if (_array[currentIndex] != USED && _array[currentIndex].id == id) {
                 return _array[currentIndex];
             }

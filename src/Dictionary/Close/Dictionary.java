@@ -20,7 +20,10 @@ public class Dictionary {
         // Проверят не сделали ли мы целый оборот (сравниваем текущий индекс с начальным), если да то место для вставки нет, выбросить исключение
         while (_array[currentIndex] != null) {
             // Если есть такой элемент уже есть то выйти
-            if(compareNames(name, _array[currentIndex])) return;
+            if(compareNames(name, _array[currentIndex])) {
+                System.out.println("Уже в списке");
+                return;
+            }
             // Если текущий индекс использованный, тогда сохраняем положения
             // Дальше нам нужно убедиться, что такого элемента уже нет в списке
             // Проверяем на этот элемент, пока не встретим ни разу не использовавашиеся или список закончиться
@@ -28,7 +31,10 @@ public class Dictionary {
             if(_array[currentIndex] == USED) {
                 int saveInput = currentIndex;
                 while (_array[currentIndex] != null) {
-                    if(compareNames(name, _array[currentIndex])) return;
+                    if(compareNames(name, _array[currentIndex])) {
+                        System.out.println("Уже в списке");
+                        return;
+                    }
                     currentIndex = getNext(currentIndex);
                     if (currentIndex == startIndex) {
                        break;
@@ -77,7 +83,6 @@ public class Dictionary {
         // Если имя совпало элемент найден
         // Проверяем каждую итерацию не сделали ли мы целый оборот(сравниваем текущий индекс с начальным), тогда элемент не найден
         while (_array[currentIndex] != null) {
-            System.out.println(currentIndex);
             if (_array[currentIndex] != USED && compareNames(_array[currentIndex], name)) {
                 return true;
             }
