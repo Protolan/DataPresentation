@@ -21,23 +21,51 @@ public class Set {
         _head = null;
     }
 
-    // Копирующий конструктор, задаем начало копирования и откуда копируем
-    public Set(Node start, Node from) {
-        copyFrom(start, from);
+    public Set(Node node) {
+        _head = getNodeCopy(node);
     }
+
 
     public Set union(Set set) {
         //----ЧАСТНЫЕ СЛУЧАИ----//
         // Если список этот же возвращает копию списка
         // Если оба списка пустых возвращаем пустой список
         // Если кто из списка пустой, возвращаем копию непустого списка
+        // Если список этот же возвращает копию списка
+        if (set == this) return new Set(set._head);
+        // Если оба списка пустых возвращаем пустой список
+        if (set._head == null && _head == null) {
+            return new Set();
+        }
+        // Если кто из списка пустой, возвращаем копию непустого списка
+        if (set._head == null) {
+            return new Set(set._head);
+        }
+        if (_head == null) {
+            return new Set(_head);
+        }
+
+        Set union = new Set(_head);
+        Node unionCurrent = union._head;
+        Node setCurrent = set._head;
+        while (unionCurrent != null && setCurrent != null) {
+            if(unionCurrent.value < setCurrent.value) {
+                unionCurrent = findValueLocation(unionCurrent, setCurrent.value).next;
+            }
+            else if(unionCurrent.value > setCurrent.value)
+            {
+                setCurrent = findValueLocation(setCurrent, unionCurrent.value).next;
+            }
+            else {
+                unionCurrent = unionCurrent.next;
+                setCurrent = setCurrent.next;
+            }
+        }
         //----ОСНОВНОЙ АЛГОРИТМ----//
         // Создаем копию из первого множества
         // Инициализируем голову нового списка, присваеваем значение наименьшой головы из двух списков
         // Идем элементам второго множества и вызываем findClosest первого, чтобы найти элемент для копирования
         // Таким образом выставляем все значения
-        // Если значения равны, тогда мы берем любое, и продвигаемся дальше по двум спискам
-        // Мы ищем наименьший элемент из двух список и копируем его следущим элементом
         // Если кто-то из списков остался не пустым мы должны скопировать откуда все его элементы с помощью копирующего метода
         return null;
     }
@@ -76,12 +104,23 @@ public class Set {
     // Присваивает новое множество
     // Необходимо скопировать ячейки то есть создать новые ноды
     public void assign(Set set) {
-        copyFrom(set._head, set._head);
+        set._head = getNodeCopy(set._head);
     }
 
     // Копирует входящее множества в исходное
-    private void copyFrom(Node start, Node from) {
-
+    private Node getNodeCopy(Node from) {
+        if(from == null) return null;
+        // Иначе инициализируем голову и копируем поэлементно
+        // Мы не можем просто присвоить узел так как обьект
+        Node copyRoot = new Node(from.value, null);
+        Node to = copyRoot;
+        from = from.next;
+        while (from != null) {
+            to.next = new Node(from.value, null);
+            from = from.next;
+            to = to.next;
+        }
+        return copyRoot;
     }
 
     public boolean equal(Set set) {
