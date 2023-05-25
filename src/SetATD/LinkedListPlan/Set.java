@@ -21,9 +21,9 @@ public class Set {
         _head = null;
     }
 
-    // Копирующий конструктор, задаем начало откда копируем и конец откуда копируем
-    public Set(Node start, Node end) {
-        copyFrom(start, end);
+    // Копирующий конструктор, задаем начало копирования и откуда копируем
+    public Set(Node start, Node from) {
+        copyFrom(start, from);
     }
 
     public Set union(Set set) {
@@ -72,8 +72,6 @@ public class Set {
         return null;
     }
 
-    // Написать публичный метод для проверки пересения
-
 
     // Присваивает новое множество
     // Необходимо скопировать ячейки то есть создать новые ноды
@@ -82,10 +80,8 @@ public class Set {
     }
 
     // Копирует входящее множества в исходное
-    private void copyFrom(Node from, Node to) {
-        // Если входящее множество пустое, то обнуляет список
-        // Инициализируем голову, с таким же значение
-        // Пробегаемся по входящему списку и копирует поэлементно
+    private void copyFrom(Node start, Node from) {
+
     }
 
     public boolean equal(Set set) {
@@ -105,15 +101,21 @@ public class Set {
     }
 
     public Set find(Set set, int value) {
-        // Такой же алгоритм как в member, но вызываем для двух множества отдельно
-        return null;
+        if (isMember(value)) return this;
+        else if (set.isMember(value)) return set;
+        else return null;
     }
 
     public boolean member(int value) {
-        // Вызываем метод findClosest от головы
-        // Если next позиции соответствует значению, возвращаем true иначе false
-        return true;
+        return isMember(value);
     }
+
+
+    private boolean isMember(int value) {
+        Node previousNode = findValueLocation(_head,value);
+        return previousNode.next != null && previousNode.next.value == value;
+    }
+
 
     // Минимальный элемент это голова
     public int min() {
@@ -137,15 +139,33 @@ public class Set {
 
     // Добавляет значение в множество, если его там нет, если нет ничего не делать
     public void insert(int value) {
-        // Используем метод closestNode, чтобы найти позиции для вставки
-        // Если список пустой или новое значение самое маленькое, тогда мы создаем новую голову
+        Node previousNode = findValueLocation(_head, value);
+        // Если список пустой или новое значение самое маленькое
+        if (previousNode == null) {
+            _head = new Node(value, _head);
+            return;
+        }
         // Если уже есть в множестве ничего не делаем
+        if (previousNode.next != null && previousNode.next.value == value) {
+            return;
+        }
+        // Если нет элемент, то вставляем следущим элементом
+        previousNode.next = new Node(value, previousNode.next);
     }
 
     // Удаляет значение из множества, если оно там есть, если нет ничего не делать
     public void delete(int value) {
-        // Если удаляемое значение голова, то голова равны следущему элементу после нее
-        // Используем метод closestNode, чтобы найти позиции для удаления
+        if(_head == null || _head.value > value) return;
+        // Проверка на первое значение
+        if (_head.value == value) {
+            _head = _head.next;
+            return;
+        }
+
+        Node previousNode = findValueLocation(_head, value);
+        if(previousNode.next != null && previousNode.next.value == value) {
+            previousNode.next = previousNode.next.next;
+        }
     }
 
     public void makeNull() {
@@ -188,9 +208,16 @@ public class Set {
         Node set1Current = _head;
         Node set2Current = set._head;
         while(set1Current.next != null && set2Current != null) {
-            if(set1Current.next.value == set2Current.value) return true;
-            set1Current = findValueLocation(set1Current, set2Current.value);
-            set2Current = set2Current.next;
+            if(set1Current.value < set2Current.value) {
+                set1Current = findValueLocation(set1Current, set2Current.value).next;
+            }
+            else if(set1Current.value > set2Current.value)
+            {
+                set2Current = findValueLocation(set2Current, set1Current.value).next;
+            }
+            else {
+                return true;
+            }
         }
         return false;
     }
