@@ -14,9 +14,12 @@ public class Test {
         multiList.initData(STUDENTS_FILE, COURSES_FILE);
         multiList.addStudentCourse("Alan", 25);
         multiList.addStudentCourse("Ekaterina", 25);
-        multiList.removeStudentCourse("Alan", 25);
-        multiList.addStudentCourse("Alan", 25);
+        multiList.addStudentCourse("Bato",25);
+        multiList.addStudentCourse("Bato",12);
+        multiList.addStudentCourse("Ekaterina", 12);
+        multiList.removeStudentCourse("Ekaterina", 25);
         multiList.printCoursesOfStudent("Alan");
+        multiList.printCoursesOfStudent("Ekaterina");
         multiList.printStudentsOfCourse(25);
     }
 
