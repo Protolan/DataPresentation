@@ -82,7 +82,7 @@ public class MultiList {
             while (!studentLink.isConcrete()) {
                 studentLink = ((MultiLink) studentLink).studentLink;
             }
-            if(studentLink == student) {
+            if (studentLink == student) {
                 return;
             }
             currentLink = multiLink.courseLink;
@@ -125,7 +125,7 @@ public class MultiList {
                 System.out.println("Идет работа на курсом");
                 courseLink = ((MultiLink) courseLink).courseLink;
             }
-            if ( courseLink == course) {
+            if (courseLink == course) {
                 System.out.println("Курс нашелся!");
                 break;
             }
@@ -144,11 +144,9 @@ public class MultiList {
         while (!currentCourseLink.isConcrete()) {
             Link studentLink = currentCourseLink.studentLink;
             while (!studentLink.isConcrete()) {
-                System.out.println("Идет работа на студентом");
                 studentLink = ((MultiLink) studentLink).studentLink;
             }
-            if(studentLink == student) {
-                System.out.println("Студент нашелся!");
+            if (studentLink == student) {
                 break;
             }
             previousCourseLink = currentCourseLink;
@@ -176,27 +174,38 @@ public class MultiList {
             System.out.println("Cтудента + " + studentName + " не существует");
             return;
         }
-        // Идем со стороны студента, ищем курсы и ищем предыдущий и удаляем их
+        // Идем со стороны курса, ищем курсы и ищем предыдущий и удаляем их
         Link currentLink = student.link;
         while (!currentLink.isConcrete()) {
             MultiLink multiLink = (MultiLink) currentLink;
             // Как только находим мультиссылку с сылкой на курс, нужно элемент который на нее ссылается
             // Мы идем с курса, так как он образует кольцо
-            if (multiLink.courseLink.isConcrete()) {
-                System.out.println("Find");
-                Link previousCourseLink = multiLink.courseLink;
-                Link currentCourseLink = ((Course) multiLink.courseLink).link;
-                while (currentCourseLink != multiLink) {
-                    previousCourseLink = currentCourseLink;
-                    currentCourseLink = ((MultiLink) currentCourseLink).courseLink;
-                }
-                if (previousCourseLink.isConcrete()) {
-                    ((Course) previousCourseLink).link = ((MultiLink) currentCourseLink).courseLink;
-                } else {
-                    ((MultiLink) previousCourseLink).courseLink = ((MultiLink) currentCourseLink).courseLink;
-                }
+            Link courseLink = multiLink.courseLink;
+            while (!courseLink.isConcrete()) {
+                courseLink = ((MultiLink) courseLink).courseLink;
             }
-            currentLink = multiLink.courseLink;
+            Link previousCourseLink = courseLink;
+            Link currentCourseLink = ((Course) courseLink).link;
+            while (!currentCourseLink.isConcrete()) {
+                MultiLink courseMultiLink = (MultiLink) currentCourseLink;
+                Link studentLink = courseMultiLink.studentLink;
+                while (!studentLink.isConcrete()) {
+                    studentLink = ((MultiLink) studentLink).studentLink;
+                }
+                if (studentLink == student) {
+                    break;
+                }
+                previousCourseLink = currentCourseLink;
+                currentCourseLink = courseMultiLink.courseLink;
+            }
+
+            if (previousCourseLink.isConcrete()) {
+                ((Course) previousCourseLink).link = ((MultiLink) currentCourseLink).courseLink;
+            } else {
+                ((MultiLink) previousCourseLink).courseLink = ((MultiLink) currentCourseLink).courseLink;
+            }
+
+            currentLink = multiLink.studentLink;
         }
 
         student.link = student;
@@ -217,20 +226,34 @@ public class MultiList {
             MultiLink multiLink = (MultiLink) currentLink;
             // Как только находим мультиссылку с сылкой на курс, нужно элемент который на нее ссылается
             // Мы идем с курса, так как он образует кольцо
-            if (multiLink.studentLink.isConcrete()) {
-                Link previousCourseLink = multiLink.studentLink;
-                Link currentCourseLink = ((Student) multiLink.studentLink).link;
-                while (currentCourseLink != multiLink) {
-                    previousCourseLink = currentCourseLink;
-                    currentCourseLink = ((MultiLink) currentCourseLink).studentLink;
-                }
-                if (previousCourseLink.isConcrete()) {
-                    ((Student) previousCourseLink).link = ((MultiLink) currentCourseLink).studentLink;
-                } else {
-                    ((MultiLink) previousCourseLink).studentLink = ((MultiLink) currentCourseLink).studentLink;
-                }
+
+            Link studentLink = multiLink.studentLink;
+            while (!studentLink.isConcrete()) {
+                studentLink = ((MultiLink) studentLink).studentLink;
             }
-            currentLink = multiLink.studentLink;
+
+            Link previousStudentLink = studentLink;
+            Link currentStudentLink = ((Student) studentLink).link;
+            while (!currentStudentLink.isConcrete()) {
+                MultiLink studentMultiLink = (MultiLink) currentStudentLink;
+                Link courseLink = studentMultiLink.courseLink;
+                while (!courseLink.isConcrete()) {
+                    courseLink = ((MultiLink) courseLink).courseLink;
+                }
+                if (courseLink == course) {
+                    break;
+                }
+                previousStudentLink = currentStudentLink;
+                currentStudentLink = studentMultiLink.studentLink;
+            }
+
+            if (previousStudentLink.isConcrete()) {
+                ((Student) previousStudentLink).link = ((MultiLink) currentStudentLink).studentLink;
+            } else {
+                ((MultiLink) previousStudentLink).studentLink = ((MultiLink) currentStudentLink).studentLink;
+            }
+
+            currentLink = multiLink.courseLink;
         }
 
         course.link = course;

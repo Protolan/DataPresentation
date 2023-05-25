@@ -17,10 +17,11 @@ public class Test {
         multiList.addStudentCourse("Bato",25);
         multiList.addStudentCourse("Bato",12);
         multiList.addStudentCourse("Ekaterina", 12);
-        multiList.removeStudentCourse("Ekaterina", 25);
+        multiList.addStudentCourse("Ekaterina", 15);
+        multiList.removeStudent("Ekaterina");
         multiList.printCoursesOfStudent("Alan");
         multiList.printCoursesOfStudent("Ekaterina");
-        multiList.printStudentsOfCourse(25);
+        multiList.printStudentsOfCourse(12);
     }
 
 
