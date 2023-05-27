@@ -373,16 +373,18 @@ public class Set {
         }
     }
 
-    public void printSet() {
-        System.out.println();
-        System.out.print("{");
-        for (int i = _range.start; i <= _range.end; i++) {
-            if (isMember(i)) {
-                System.out.print(i + ", ");
+    public void print() {
+        for (int i = 0; i < _array.length; i++) {
+            if (_array[i] != 0) {
+                for (int j = 31; j >= 0; j--) {
+                    int mask = 1 << j;
+                    if((_array[i] & mask) != 0) {
+                        System.out.print(getNumberFromPosition(i, 32 - j) + ", ");
+                    }
+                }
             }
         }
-        System.out.print("}");
-        System.out.println("\n");
+        System.out.print("\n");
     }
 
     public String toBinaryString(int value) {

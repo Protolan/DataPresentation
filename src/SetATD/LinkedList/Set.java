@@ -20,7 +20,7 @@ public class Set {
         _head = null;
     }
 
-    public Set(Set set) {
+    private Set(Set set) {
         _head = null;
     }
 
