@@ -1,19 +1,23 @@
 package ManyToManySet;
 
 public class CourseList {
-    // Значение, которое указывает
+    // Значение, которое указывает, что значение было использовано
     private static final Course USED = new Course(0);
     private final Course[] _array;
 
     public CourseList(int capacity) {
-        //Инициализируем массив длиной maxCapacity и количество классов
-        // Создаем
+        //Инициализируем массив длиной maxCapacity
         _array = new Course[capacity];
     }
 
     // Вставить в хеш таблицу
     public void insert(int id) {
-        // Вычисляем хеш индекс
+        // Алгоритм:
+        // Вычисляем индекс с помощью хеш-функции
+        // Начинаем искать первую свободную позицию для вставки
+        // Проверяем есть ли уже такой элемент, если есть выходим
+        // Вставляем в свободную позицию
+
         int startIndex = hashFunction(id);
         int currentIndex = startIndex;
         // Идем пока не найдем первый Null
@@ -44,8 +48,10 @@ public class CourseList {
         _array[currentIndex] = new Course(id);
     }
 
+    // Метод для удаления значения из словаря
     public void delete(int id) {
-        // Вычисляем хеш индекс
+        // Алгоритм:
+        // Вычисляем индекс с помощью хеш функции
         int startIndex = hashFunction(id);
         int currentIndex = startIndex;
         // Идем пока не будет null обьект
@@ -67,8 +73,10 @@ public class CourseList {
         System.out.println("Элемент не найден");
     }
 
+    // Метод для проверки, есть ли этот элемент в словаре
     public boolean member(int id) {
-        // Вычисляем хеш индекс
+        // Алгоритм:
+        // Вычисляем индекс с помощью хеш функции
         int startIndex = hashFunction(id);
         int currentIndex = startIndex;
         // Идем пока не будет null обьект, если дойдем до конца возвращаем false
@@ -89,11 +97,13 @@ public class CourseList {
         return false;
     }
 
+    // Метод для получения значения из словаря
     public Course get(int id) {
-        // Вычисляем хеш индекс
+        // Алгоритм:
+        // Вычисляем индекс с помощью хеш функции
         int startIndex = hashFunction(id);
         int currentIndex = startIndex;
-        // Идем пока не будет null обьект, если дойдем до конца возвращаем false
+        // Идем пока не будет null обьект, если дойдем до конца возвращаем null
         // Если текущий элемент использованный значим пропускаем
         // Если нет проверяем на совпадение имен
         // Если имя совпало элемент найден
@@ -110,6 +120,7 @@ public class CourseList {
         return null;
     }
 
+    // Метод для обнуления словаря
     public void makeNull() {
         // Пробегаемся по массиву очищаем
         for (int i = 0; i < _array.length; i++) {

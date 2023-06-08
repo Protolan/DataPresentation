@@ -7,18 +7,20 @@ import java.util.Scanner;
 //Класс в котором хранится множество отношения многие ко многим
 public class MultiList {
 
+    // Список студентов
     private StudentList _studentList;
+    // Список курсов
     private CourseList _courseList;
 
 
-    // Метод которые инициализирует списки студентов и курса из файлов
+    // Метод который инициализирует списки студентов и курса из файлов
     public void initData(String studentFilePath, String courseFilePath) throws IOException {
+        // Задаем максимальное кол-во студентов и курсов
         int maxStudentCount = 30;
         int maxCourseCount = 7;
         _studentList = new StudentList(maxStudentCount);
         _courseList = new CourseList(maxCourseCount);
-        // Инициализирем FileReader и Scanner и построчно заполняем список Стдентов
-        // Каждую строку мы преоборазуем в массива char c помощью метода nameFactory, чтобы нормализовать все на 10 длину
+        // Инициализирем FileReader и Scanner и построчно заполняем список студентов, а затем курсов
         FileReader fr = new FileReader(studentFilePath);
         Scanner scan = new Scanner(fr);
         int counter = 0;
@@ -26,6 +28,7 @@ public class MultiList {
             String line = scan.nextLine();
             if (line.length() > 10) continue;
             counter++;
+            // Каждую строку мы преобразуем в массив char c помощью метода nameFactory, чтобы нормализовать все на 10 длину
             _studentList.insert(nameFactory(line));
         }
         fr.close();
@@ -40,7 +43,7 @@ public class MultiList {
         fr.close();
     }
 
-    // Метод для приведения имени из строки в массив char заданной длины
+    // Метод для приведения имени из строки в массив char заданной длины (10)
     private static char[] nameFactory(String str) {
         char[] resultName = new char[10];
         char[] initCharArray = str.toCharArray();
@@ -53,7 +56,7 @@ public class MultiList {
 
     // Добавляем студента на курс
     public void addStudentCourse(String studentName, int courseId) {
-        // Проверяем есть ли такой набор значений
+        // Проверяем есть ли вообще такой курс и студент
         Course course = _courseList.get(courseId);
         if (course == null) {
             System.out.println("Курса " + courseId + " не существует");
@@ -79,6 +82,7 @@ public class MultiList {
             MultiLink multiLink = (MultiLink) currentLink;
             // Проверяем, есть ли этот студент уже на этом курсе, если есть то выходим
             Link studentLink = multiLink.studentLink;
+            // Если ссылка на студента это мультиссылка, нужно сделать обход до тех пор пока не будет конкретный студент
             while (!studentLink.isConcrete()) {
                 studentLink = ((MultiLink) studentLink).studentLink;
             }
@@ -96,13 +100,12 @@ public class MultiList {
 
     // Убираем студента с курса
     public void removeStudentCourse(String studentName, int courseId) {
-        // Проверяем есть ли такой набор значений
+        // Проверяем есть ли вообще такой курс и студент
         Course course = _courseList.get(courseId);
         if (course == null) {
             System.out.println("Курса " + courseId + " не существует");
             return;
         }
-
         Student student = _studentList.get(nameFactory(studentName));
         if (student == null) {
             System.out.println("Cтудента + " + studentName + " не существует");
@@ -121,12 +124,11 @@ public class MultiList {
             MultiLink multiLink = (MultiLink) currentStudentLink;
             // Проверяем, есть ли этот студент уже на этом курсе, если есть то выходим
             Link courseLink = multiLink.courseLink;
+            // Если ссылка на курс это мультиссылка, нужно сделать обход до тех пор пока не будет конкретный курс
             while (!courseLink.isConcrete()) {
-                System.out.println("Идет работа на курсом");
                 courseLink = ((MultiLink) courseLink).courseLink;
             }
             if (courseLink == course) {
-                System.out.println("Курс нашелся!");
                 break;
             }
 
@@ -140,9 +142,10 @@ public class MultiList {
         }
         Link previousCourseLink = course;
         MultiLink currentCourseLink = (MultiLink) course.link;
-        // Теперь ищем предыдущий узел со стороны курс, теперь мы знаем, что он точно есть проверять не нужно
+        // Теперь ищем предыдущий узел со стороны курса
         while (!currentCourseLink.isConcrete()) {
             Link studentLink = currentCourseLink.studentLink;
+            // Если ссылка на студента это мультиссылка, нужно сделать обход до тех пор пока не будет конкретный студент
             while (!studentLink.isConcrete()) {
                 studentLink = ((MultiLink) studentLink).studentLink;
             }
@@ -153,6 +156,8 @@ public class MultiList {
             currentCourseLink = (MultiLink) currentCourseLink.courseLink;
         }
 
+        // Если все нашлось, теперь мы можем удалить студента курса со стороны курса, так и со стороны студента
+        // Важно проверить, мы удаляем ссылку у конкретного класса или мультиссылки?
         if (previousCourseLink.isConcrete()) {
             course.link = currentCourseLink.courseLink;
         } else {
@@ -168,27 +173,29 @@ public class MultiList {
 
     // Удалить студента со всех курсов
     public void removeStudent(String studentName) {
-        // Проверяем есть ли такой набор значений
+        // Проверяем есть ли такой студент
         Student student = _studentList.get(nameFactory(studentName));
         if (student == null) {
             System.out.println("Cтудента + " + studentName + " не существует");
             return;
         }
-        // Идем со стороны курса, ищем курсы и ищем предыдущий и удаляем их
+
+        // Теперь надо обойти все курсы студента и удалить у них связь с этим студентом
         Link currentLink = student.link;
         while (!currentLink.isConcrete()) {
             MultiLink multiLink = (MultiLink) currentLink;
-            // Как только находим мультиссылку с сылкой на курс, нужно элемент который на нее ссылается
-            // Мы идем с курса, так как он образует кольцо
             Link courseLink = multiLink.courseLink;
+            // Находим конкретный курс, а не мультиссылку
             while (!courseLink.isConcrete()) {
                 courseLink = ((MultiLink) courseLink).courseLink;
             }
             Link previousCourseLink = courseLink;
             Link currentCourseLink = ((Course) courseLink).link;
+            // Начинаем обход этого курса в поиска нашего студента
             while (!currentCourseLink.isConcrete()) {
                 MultiLink courseMultiLink = (MultiLink) currentCourseLink;
                 Link studentLink = courseMultiLink.studentLink;
+                // Если ссылка на студента это мультиссылка, нужно сделать обход до тех пор пока не будет конкретный студент
                 while (!studentLink.isConcrete()) {
                     studentLink = ((MultiLink) studentLink).studentLink;
                 }
@@ -199,6 +206,8 @@ public class MultiList {
                 currentCourseLink = courseMultiLink.courseLink;
             }
 
+            // Если все нашлось, теперь мы можем удалить студента со стороны курса
+            // Важно проверить, мы удаляем ссылку у курса или мультиссылки?
             if (previousCourseLink.isConcrete()) {
                 ((Course) previousCourseLink).link = ((MultiLink) currentCourseLink).courseLink;
             } else {
@@ -208,35 +217,35 @@ public class MultiList {
             currentLink = multiLink.studentLink;
         }
 
+        // Ссылку на студента мы просто обнуляем (ссылается сам на себя)
         student.link = student;
 
     }
 
     // Удаляем все студентов с курса
     public void removeCourse(int courseId) {
-        // Проверяем есть ли такой набор значений
+        // Проверяем есть ли такой курс
         Course course = _courseList.get(courseId);
         if (course == null) {
             System.out.println("Курса " + courseId + " не существует");
             return;
         }
-        // Идем со стороны студента, ищем курсы и ищем предыдущий и удаляем их
+        // Теперь надо обойти все курсы студента и удалить у них связь с этим студентом
         Link currentLink = course.link;
         while (!currentLink.isConcrete()) {
             MultiLink multiLink = (MultiLink) currentLink;
-            // Как только находим мультиссылку с сылкой на курс, нужно элемент который на нее ссылается
-            // Мы идем с курса, так как он образует кольцо
-
             Link studentLink = multiLink.studentLink;
+            // Находим конкретного студента, а не мультиссылку
             while (!studentLink.isConcrete()) {
                 studentLink = ((MultiLink) studentLink).studentLink;
             }
-
             Link previousStudentLink = studentLink;
             Link currentStudentLink = ((Student) studentLink).link;
+            // Начинаем обход этого студента в поиска нашего курса
             while (!currentStudentLink.isConcrete()) {
                 MultiLink studentMultiLink = (MultiLink) currentStudentLink;
                 Link courseLink = studentMultiLink.courseLink;
+                // Если ссылка на курс это мультиссылка, нужно сделать обход до тех пор пока не будет конкретный курс
                 while (!courseLink.isConcrete()) {
                     courseLink = ((MultiLink) courseLink).courseLink;
                 }
@@ -247,6 +256,8 @@ public class MultiList {
                 currentStudentLink = studentMultiLink.studentLink;
             }
 
+            // Если все нашлось, теперь мы можем удалить курса со стороны студента
+            // Важно проверить, мы удаляем ссылку студента или мультиссылки?
             if (previousStudentLink.isConcrete()) {
                 ((Student) previousStudentLink).link = ((MultiLink) currentStudentLink).studentLink;
             } else {
@@ -256,6 +267,7 @@ public class MultiList {
             currentLink = multiLink.courseLink;
         }
 
+        // Ссылку на курс мы просто обнуляем (ссылается сам на себя)
         course.link = course;
 
     }
@@ -275,16 +287,16 @@ public class MultiList {
         }
         System.out.println("Студенты на курсе " + courseId + ": ");
         // Начинаем обход со стороны курса
-        // Идем до того момента пока текущая ссылка не будет конкретной
-        // То есть до момента когда мы вернемся к этому же курсу
         Link currentLink = course.link;
         while (!currentLink.isConcrete()) {
             MultiLink multiLink = (MultiLink) currentLink;
-            //Выводим студента
+
             Link studentLink = multiLink.studentLink;
+            // Если ссылка на студента это мультиссылка, нужно сделать обход до тех пор пока не будет конкретный студент
             while (!studentLink.isConcrete()) {
                 studentLink = ((MultiLink) studentLink).studentLink;
             }
+            //Выводим студента
             Student student = (Student) studentLink;
             System.out.println("\t" + student.toString());
             currentLink = multiLink.courseLink;
@@ -306,11 +318,11 @@ public class MultiList {
         }
         System.out.println("Курсы студента " + studentName + ": ");
         // Идем до того момента пока текущая ссылка не будет конкретной
-        // То есть до момента когда мы вернемся к этому же студенту
         Link currentLink = student.link;
         while (!currentLink.isConcrete()) {
             MultiLink multiLink = (MultiLink) currentLink;
             Link courseLink = multiLink.courseLink;
+            // Если ссылка на курс это мультиссылка, нужно сделать обход до тех пор пока не будет конкретный курс
             while (!courseLink.isConcrete()) {
                 courseLink = ((MultiLink) courseLink).courseLink;
             }

@@ -11,6 +11,8 @@ public class MultiLink extends Link {
         this.studentLink = studentLink;
         this.courseLink = courseLink;
     }
+
+    // Метод который будет использоваться для проверки класса обьекта
     @Override
     public boolean isConcrete() {
         return false;

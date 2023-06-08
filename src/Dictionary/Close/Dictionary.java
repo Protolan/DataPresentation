@@ -1,23 +1,28 @@
 package Dictionary.Close;
 
 public class Dictionary {
-    // Значение, которое указывает
+    // Значение, которое указывает, что значение было использовано
     private static final char[] USED = {0};
+
     private final char[][] _array;
 
     public Dictionary(int capacity, int classCount) {
-        //Инициализируем массив длиной maxCapacity и количество классов
-        // Создаем
+        //Инициализируем массив длиной maxCapacity
         _array = new char[capacity][];
     }
 
-    // Вставить в хеш таблицу
+    // Метод для вставки значения в словарь
     public void insert(char[] name) {
-        // Вычисляем хеш индекс
+        // Алгоритм:
+        // Вычисляем индекс с помощью хеш-функции
+        // Начинаем искать первую свободную позицию для вставки
+        // Проверяем есть ли уже такой элемент, если есть выходим
+        // Вставляем в свободную позицию
+
         int startIndex = hashFunction(name);
         int currentIndex = startIndex;
         // Идем пока не найдем первый Null
-        // Проверят не сделали ли мы целый оборот (сравниваем текущий индекс с начальным), если да то место для вставки нет, выбросить исключение
+        // Проверяем не сделали ли мы целый оборот (сравниваем текущий индекс с начальным), если да то место для вставки нет, выбросить исключение
         while (_array[currentIndex] != null) {
             // Если есть такой элемент уже есть то выйти
             if(compareNames(name, _array[currentIndex])) {
@@ -26,8 +31,8 @@ public class Dictionary {
             }
             // Если текущий индекс использованный, тогда сохраняем положения
             // Дальше нам нужно убедиться, что такого элемента уже нет в списке
-            // Проверяем на этот элемент, пока не встретим ни разу не использовавашиеся или список закончиться
-            // И только после этого вставляем его в сохраненную USED позцию
+            // Проверяем на этот элемент, пока не встретим ни разу не использовававшиеся или список закончиться
+            // И только после этого вставляем его в сохраненную USED позицию
             if(_array[currentIndex] == USED) {
                 int saveInput = currentIndex;
                 while (_array[currentIndex] != null) {
@@ -43,6 +48,7 @@ public class Dictionary {
                 _array[saveInput] = name;
                 return;
             }
+            // Используем getNext, что сделать полный оборот
             currentIndex = getNext(currentIndex);
             if (currentIndex == startIndex) throw new RuntimeException("Невозможно добавить еще элементов!");
         }
@@ -50,8 +56,10 @@ public class Dictionary {
         _array[currentIndex] = name;
     }
 
+    // Метод для удаления значения из словаря
     public void delete(char[] name) {
-        // Вычисляем хеш индекс
+        // Алгоритм:
+        // Вычисляем индекс с помощью хеш функции
         int startIndex = hashFunction(name);
         int currentIndex = startIndex;
         // Идем пока не будет null обьект
@@ -73,8 +81,11 @@ public class Dictionary {
         System.out.println("Элемент не найден");
     }
 
+
+    // Метод для проверки, есть ли этот элемент в словаре
     public boolean member(char[] name) {
-        // Вычисляем хеш индекс
+        // Алгоритм:
+        // Вычисляем индекс с помощью хеш функции
         int startIndex = hashFunction(name);
         int currentIndex = startIndex;
         // Идем пока не будет null обьект, если дойдем до конца возвращаем false
@@ -94,6 +105,7 @@ public class Dictionary {
         return false;
     }
 
+    // Метод для обнуления словаря
     public void makeNull() {
         // Пробегаемся по массиву очищаем
         for (int i = 0; i < _array.length; i++) {
@@ -107,8 +119,6 @@ public class Dictionary {
     private int hashFunction(char[] name) {
         char sum = 0;
         // Пробегаемся по массиву char
-        // Вопрос что лучше, бежать по массиву до конца и складывать включая возможные пустые символы
-        // Или бежать по массиву пока не встретиться первый пустой символ или не дойдет до конца?
         for (int i = 0; i < name.length; i++) {
             sum += name[i];
         }
@@ -130,7 +140,6 @@ public class Dictionary {
 
 
     //ВЫВОД
-
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -146,6 +155,7 @@ public class Dictionary {
         return builder.toString();
     }
 
+    // Метод который красиво выводит символьный массив
     private char[] getClearName(char[] name) {
         int counter = 0;
         for (int i = 0; i < name.length; i++) {

@@ -2,9 +2,12 @@ package ManyToManySet;
 
 public class Student extends Link {
 
+    // Имя студента, длина 10 символов
     public final char[] name;
+    // Хранит ссылку на мультиссылку, или если нет связей сам на себя
     public Link link;
 
+    //По умолчанию запись ссылается на саму себя
     public Student(char[] name) {
         this.name = name;
         link = this;
@@ -27,9 +30,7 @@ public class Student extends Link {
         return new String(clear);
     }
 
-
-
-
+    // Метод который будет использоваться для проверки класса обьекта
     @Override
     public boolean isConcrete() {
         return true;

@@ -1,10 +1,10 @@
 package SetATD;
 
-import SetATD.LinkedListPlan.Set;
+import SetATD.RingedLinkedList.Set;
 
 public class Test {
     public static void main(String[] args) {
-        var set1 = new Set(-100, -1);
+        var set1 = new Set(-100, 100);
         set1.insert(-20);
         set1.insert(-22);
         set1.insert(-1);
@@ -31,8 +31,8 @@ public class Test {
         set1.print();
         set2.print();
         var union = set2.union(set1);
-        var difference = set2.difference(set1);
-        var intersection = set2.intersection(set1);
+        var difference = set1.difference(set2);
+        var intersection = set1.intersection(set2);
         System.out.println("Union");
         union.print();
         System.out.println("Difference");

@@ -1,25 +1,28 @@
 package ManyToManySet;
 
 public class StudentList {
-    // Значение, которое указывает
+    // Значение, которое указывает, что значение было использовано
     private static final Student USED = new Student(null);
     private final Student[] _array;
 
     public StudentList(int capacity) {
-        //Инициализируем массив длиной maxCapacity и количество классов
-        // Создаем
+        //Инициализируем массив длиной maxCapacity
         _array = new Student[capacity];
     }
 
 
-
-    // Вставить в хеш таблицу
+    // Метод для вставки значения в словарь
     public void insert(char[] name) {
-        // Вычисляем хеш индекс
+        // Алгоритм:
+        // Вычисляем индекс с помощью хеш-функции
+        // Начинаем искать первую свободную позицию для вставки
+        // Проверяем есть ли уже такой элемент, если есть выходим
+        // Вставляем в свободную позицию
+
         int startIndex = hashFunction(name);
         int currentIndex = startIndex;
         // Идем пока не найдем первый Null
-        // Проверят не сделали ли мы целый оборот (сравниваем текущий индекс с начальным), если да то место для вставки нет, выбросить исключение
+        // Проверяем не сделали ли мы целый оборот (сравниваем текущий индекс с начальным), если да то место для вставки нет, выбросить исключение
         while (_array[currentIndex] != null) {
             // Если есть такой элемент уже есть то выйти
             if(compareNames(name, _array[currentIndex].name)) return;
@@ -46,8 +49,10 @@ public class StudentList {
         _array[currentIndex] = new Student(name);
     }
 
+    // Метод для удаления значения из словаря
     public void delete(char[] name) {
-        // Вычисляем хеш индекс
+        // Алгоритм:
+        // Вычисляем индекс с помощью хеш функции
         int startIndex = hashFunction(name);
         int currentIndex = startIndex;
         // Идем пока не будет null обьект
@@ -69,8 +74,10 @@ public class StudentList {
         System.out.println("Элемент не найден");
     }
 
+    // Метод для проверки, есть ли этот элемент в словаре
     public boolean member(char[] name) {
-        // Вычисляем хеш индекс
+        // Алгоритм:
+        // Вычисляем индекс с помощью хеш функции
         int startIndex = hashFunction(name);
         int currentIndex = startIndex;
         // Идем пока не будет null обьект, если дойдем до конца возвращаем false
@@ -91,11 +98,13 @@ public class StudentList {
         return false;
     }
 
+    // Метод для получения значения из словаря
     public Student get(char[] name) {
-        // Вычисляем хеш индекс
+        // Алгоритм:
+        // Вычисляем индекс с помощью хеш функции
         int startIndex = hashFunction(name);
         int currentIndex = startIndex;
-        // Идем пока не будет null обьект, если дойдем до конца возвращаем false
+        // Идем пока не будет null обьект, если дойдем до конца возвращаем null
         // Если текущий элемент использованный значим пропускаем
         // Если нет проверяем на совпадение имен
         // Если имя совпало элемент найден
@@ -113,6 +122,7 @@ public class StudentList {
     }
 
 
+    // Метод для обнуления словаря
     public void makeNull() {
         // Пробегаемся по массиву очищаем
         for (int i = 0; i < _array.length; i++) {
@@ -121,13 +131,10 @@ public class StudentList {
     }
 
 
-
     // Хеш-функция результат которой вернет нужный индекс в массиве
     private int hashFunction(char[] name) {
         char sum = 0;
         // Пробегаемся по массиву char
-        // Вопрос что лучше, бежать по массиву до конца и складывать включая возможные пустые символы
-        // Или бежать по массиву пока не встретиться первый пустой символ или не дойдет до конца?
         for (int i = 0; i < name.length; i++) {
             sum += name[i];
         }

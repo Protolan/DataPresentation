@@ -1,16 +1,18 @@
 package PartialSet;
 
-import PartialSet.Plan.PartialSet;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Scanner;
 
 
 public class Main {
-    private static final String FILE_NAME = "C:\\Users\\alang\\Desktop\\Учеба\\Представление данных\\DataPresentation\\src\\PartialSet\\PartialSetData";
+    private static final String FILE_NAME = "src/PartialSet/PartialSetData";
 
     public static void main(String[] args) throws FileNotFoundException {
+        // Алгоритм:
+        // Читаем файл построчно и записываем в множество с помощью add
+        // И сортируем множества с помощью sort
+
         PartialSet set = new PartialSet();
         FileReader reader = new FileReader(FILE_NAME);
         Scanner scanner = new Scanner(reader);

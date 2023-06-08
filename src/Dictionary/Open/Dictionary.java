@@ -23,6 +23,7 @@ public class Dictionary {
             return true;
         }
 
+        // Метод для красивого вывода имени
         public char[] getClearName() {
             int counter = 0;
             for (int i = 0; i < name.length; i++) {
@@ -45,7 +46,6 @@ public class Dictionary {
     private final Node[] _array;
 
     public Dictionary(int maxCapacity, int classCount) {
-        // Нужен ли нам maxCapacity?
         // Инициализируем количество классов и создаем массива равный кол-во классов
         B = classCount;
         _array = new Node[B];
@@ -133,16 +133,11 @@ public class Dictionary {
     // Хеш-функция результат которой вернет нужный индекс в массиве
     private int hashFunction(char[] name) {
         char sum = 0;
-        // Пробегаемся по массиву char
-        // Вопрос что лучше, бежать по массиву до конца и складывать включая возможные пустые символы
-        // Или бежать по массиву пока не встретиться первый пустой символ или не дойдет до конца?
         for (int i = 0; i < name.length; i++) {
             sum += name[i];
         }
         return sum % B;
     }
-
-
 
 
     @Override

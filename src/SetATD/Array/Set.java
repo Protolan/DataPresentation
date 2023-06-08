@@ -44,6 +44,7 @@ public class Set {
         _array = new int[arrayLength];
     }
 
+    // Копирующий конструктор
     private Set(Set set) {
         _range = new Range(set._range.start, set._range.end);
         _array = new int[set._array.length];
@@ -200,6 +201,11 @@ public class Set {
 
     // Возвращает минимальный элемент
     public int min() {
+        // Алгоритм:
+        // Ищем первый ненулевой элемент массива
+        // Ищем первый ненулевой бит
+        // Используем метод getNumberFromPosition, чтобы получить число из индекса и бита
+
         for (int i = 0; i < _array.length; i++) {
             if (_array[i] != 0) {
                 int number = _array[i];
@@ -217,6 +223,11 @@ public class Set {
 
     // Возвращает максимальный элемент
     public int max() {
+        // Алгоритм:
+        // Ищем первый с конца ненулевой элемент массива
+        // Ищем последний ненулевой бит
+        // Используем метод getNumberFromPosition, чтобы получить число из индекса и бита
+
         for (int i = _array.length - 1; i >= 0; i--) {
             if (_array[i] != 0) {
                 int number = _array[i];
@@ -264,12 +275,15 @@ public class Set {
     }
 
 
+    // Метод для обнуления мн-ва
     public void makeNull() {
         for (int i = 0; i < _array.length; i++) {
             _array[i] = 0;
         }
     }
 
+    // Метод для проверки, что мн-ва имееют общие элементы
+    // Для использования в merge и find
     public boolean haveCommonElements(Set set) {
         if(rangeNotInter(_range, set._range)) return false;
         // Находим диапазон пересечения
@@ -356,7 +370,7 @@ public class Set {
 
     private int getNumberFromPosition(int index, int bit) {
         // Находим число которое находится в первой ячейке массива на 0 бите
-        int startValue = _range.start < 0 ? -((-_range.start + 31) & ~31) : ((_range.start + 31) & ~31) - 32;
+        int startValue = _range.start < 0 ? (int) Math.floor((double) _range.start / 32) * 32 : (int) Math.ceil((double) _range.start / 32) * 32;
         return startValue  + 32*index + bit - 1;
     }
 
@@ -374,6 +388,8 @@ public class Set {
     }
 
     public void print() {
+        // Ищем все ненулевые элементы массива, находим ненулевые биты
+        // Преобразуем в число с помощью getNumberFromPosition
         for (int i = 0; i < _array.length; i++) {
             if (_array[i] != 0) {
                 for (int j = 31; j >= 0; j--) {
