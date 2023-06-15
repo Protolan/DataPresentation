@@ -92,12 +92,14 @@ public class Dictionary {
         // Проверяем во время пробежки next на это имя и если имя найдется тогда удаляем элемент
         // Если у удаляемого элемента нет previous, тогда обнуляем элемент массива
         // Если есть, то просто предыдущий ссылается на next текущего
+        Node previous = null;
         Node current = _array[index];
-        while (current.next != null) {
-            if(current.next.compareNames(name)) {
-                current.next = current.next.next;
+        while (current != null) {
+            if(current.compareNames(name)) {
+                previous.next = current.next;
                 return;
             }
+            previous = current;
             current = current.next;
         }
 
