@@ -17,8 +17,8 @@ public class Test {
         multiList.addStudentCourse(nameFactory("Ekaterina"), 12);
         multiList.addStudentCourse(nameFactory("Ekaterina"), 15);
 //        multiList.removeStudent(nameFactory("Ekaterina"));
-//        multiList.printCoursesOfStudent(nameFactory("Alan"));
-//        multiList.printCoursesOfStudent(nameFactory("Ekaterina"));
+        multiList.printCoursesOfStudent(nameFactory("Alan"));
+        multiList.printCoursesOfStudent(nameFactory("Ekaterina"));
         multiList.printStudentsOfCourse(12);
     }
 
