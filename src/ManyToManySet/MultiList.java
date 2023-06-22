@@ -333,5 +333,11 @@ public class MultiList {
         }
     }
 
+    // Метод для поиска находится ли студент на курсе
+    private void isStudentOnCourse() {
+
+    }
+
+    // Метод для получения предыдущего курса
 
 }
