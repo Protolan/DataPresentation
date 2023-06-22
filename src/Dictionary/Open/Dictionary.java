@@ -54,7 +54,7 @@ public class Dictionary {
     // Вставить в хеш таблицу
     public void insert(char[] name) {
         // Вычисляем хеш индекс через метод hashFunction
-        int index = hashFunction(name);
+        int index = hashFunction(hash(name));
         // Если элемент массива пустой, тогда создаем новый обьект с этим именем
         if(_array[index] == null) {
             _array[index] = new Node(name);
@@ -63,17 +63,21 @@ public class Dictionary {
         // Если элемент не пустой, тогда идем по связному списку пока next элемента не будет равен null
         // Так мы найдем предыдущий элемент, чтобы вставить в него следущий элемент
         // Также проверяем во время пробежки проверяем нет ли там уже такого имени, и если найдеться то return
+        Node previous = _array[index];
         Node current = _array[index];
-        while (current.next != null) {
-            if(current.compareNames(name)) return;
+        while (current != null) {
+            if(current.compareNames(name)) {
+                return;
+            }
+            previous = current;
             current = current.next;
         }
-        current.next = new Node(name);
+        previous.next = new Node(name);
     }
 
     public void delete(char[] name) {
         // Вычисляем хеш индекс через метод hashFunction
-        int index = hashFunction(name);
+        int index = hashFunction(hash(name));
         // Если элемент пуcтой, тогда нечего удалять, return
         if(_array[index] == null) {
             return;
@@ -107,7 +111,7 @@ public class Dictionary {
 
     public boolean member(char[] name) {
         // Вычисляем хеш индекс через метод hashFunction
-        int index = hashFunction(name);
+        int index = hashFunction(hash(name));
         // Если элемент пустой, тогда возвращаем false
         if(_array[index] == null) {
             return false;
@@ -133,12 +137,17 @@ public class Dictionary {
     }
 
     // Хеш-функция результат которой вернет нужный индекс в массиве
-    private int hashFunction(char[] name) {
-        char sum = 0;
+    private int hashFunction(int hash) {
+        return  hash % B;
+    }
+
+    private static int hash(char[] name) {
+        int sum = 0;
+        // Пробегаемся по массиву char
         for (int i = 0; i < name.length; i++) {
             sum += name[i];
         }
-        return sum % B;
+        return sum;
     }
 
 

@@ -75,54 +75,52 @@ public class PartialSet {
         // Удаляем из списка все элементы с помощью метода pop
         // Формируем новый список в порядке получения удаленных элементов
         // Перезаписываем голову
-
-        // Инициализируем голову
-        var head = pop();
-        var current = head;
+        Element newHead = null;
+        Element current = null;
         // Вызываем метод pop, пока он не вернет пустой список
-        while (current != null) {
-            current.next = pop();
-            current = current.next;
+        while (_head != null) {
+            Element removeNode;
+            if(_head.count == 0) {
+                 removeNode = _head;
+                _head = _head.next;
+                clearElement(removeNode);
+            }
+            else {
+                Element previousToRemove = previousToRemove();
+                removeNode = previousToRemove.next;
+                previousToRemove.next = removeNode.next;
+                clearElement(removeNode);
+            }
+            if(newHead == null) {
+                newHead = removeNode;
+                current = newHead;
+            }
+            else {
+                current.next = removeNode;
+            }
+
         }
         // Назначаем новое значение голове
-        _head = head;
+        _head = newHead;
     }
 
-    // Метод для получения удаленного элемента
-    private Element pop() {
+
+    // Метод для получения, вызывать только если haad.count != 0
+    private Element previousToRemove() {
         // Алгоритм:
         // Вначале находим предыдущий элемент к тому элемент которого count = 0
         // Затем удаляем обьект из списка и очищаем его с помощью clearElement
         // Возвращаем удаленный элемент
-
-        if (_head == null) return null;
-        // Если элемент голова то берем его и очищаем
-        if (_head.count == 0) {
-            Element removeNode = _head;
-            _head = _head.next;
-            clearElement(removeNode);
-            return removeNode;
-        }
         Element previous = _head;
-        while (previous.next != null) {
-            if (previous.next.count == 0) {
-                break;
+        Element current = _head;
+        while (current != null) {
+            if (current.count == 0) {
+                return previous;
             }
-            previous = previous.next;
+            previous = current;
+            current = previous.next;
         }
-
-        if (previous.next == null) {
-            // Если в списке остались элементы, но он не нашел элемент с count == 0, то выбросить исключение
-            throw new RuntimeException("Граф зациклен, не возможно найти элементы на которые никто не ссылается");
-        }
-
-        // Сохраняем удаленный элемент
-        Element removeElement = previous.next;
-        // Удаляем элемент из списка
-        previous.next = previous.next.next;
-        // Очищаем удаленный элемент
-        clearElement(removeElement);
-        return removeElement;
+        return null;
     }
 
     // Приватный метод для очищения элемента
