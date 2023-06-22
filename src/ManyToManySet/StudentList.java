@@ -18,42 +18,48 @@ public class StudentList {
         // Начинаем искать первую свободную позицию для вставки
         // Проверяем есть ли уже такой элемент, если есть выходим
         // Вставляем в свободную позицию
-
-        int startIndex = hashFunction(name);
+        int i = 0;
+        int hash = hash(name);
+        int startIndex = hashFunction(hash);
         int currentIndex = startIndex;
+        int saveInput = -1;
         // Идем пока не найдем первый Null
         // Проверяем не сделали ли мы целый оборот (сравниваем текущий индекс с начальным), если да то место для вставки нет, выбросить исключение
         while (_array[currentIndex] != null) {
             // Если есть такой элемент уже есть то выйти
-            if(compareNames(name, _array[currentIndex].name)) return;
-            // Если текущий индекс использованный, тогда сохраняем положения
-            // Дальше нам нужно убедиться, что такого элемента уже нет в списке
-            // Проверяем на этот элемент, пока не встретим ни разу не использовавашиеся или список закончиться
-            // И только после этого вставляем его в сохраненную USED позцию
-            if(_array[currentIndex] == USED) {
-                int saveInput = currentIndex;
-                while (_array[currentIndex] != null) {
-                    if(compareNames(name, _array[currentIndex].name)) return;
-                    currentIndex = getNext(currentIndex);
-                    if (currentIndex == startIndex) {
-                        break;
-                    }
-                }
-                _array[saveInput] = new Student(name);
+            if (compareNames(name, _array[currentIndex].name)) {
+                System.out.println("Уже в списке");
                 return;
             }
-            currentIndex = getNext(currentIndex);
-            if (currentIndex == startIndex) throw new RuntimeException("Невозможно добавить еще элементов!");
+            // Если текущий индекс использованный, тогда сохраняем положения
+            // Дальше нам нужно убедиться, что такого элемента уже нет в списке
+            // Проверяем на этот элемент, пока не встретим ни разу не использовававшиеся или список закончиться
+            // И только после этого вставляем его в сохраненную USED позицию
+            if (saveInput == -1 && _array[currentIndex] == USED) {
+                saveInput = currentIndex;
+            }
+            // Используем getNext, что сделать полный оборот
+            currentIndex = hashFunction(hash + ++i);
+            if (currentIndex == startIndex) {
+                if (saveInput != -1) {
+                    _array[saveInput] = new Student(name);
+                    return;
+                }
+                throw new RuntimeException("Невозможно добавить еще элементов!");
+            }
+
         }
 
-        _array[currentIndex] = new Student(name);
+        _array[saveInput == -1 ? currentIndex : saveInput] = new Student(name);
     }
 
     // Метод для удаления значения из словаря
     public void delete(char[] name) {
         // Алгоритм:
         // Вычисляем индекс с помощью хеш функции
-        int startIndex = hashFunction(name);
+        int i = 0;
+        int hash = hash(name);
+        int startIndex = hashFunction(hash);
         int currentIndex = startIndex;
         // Идем пока не будет null обьект
         // Если текущий элемент использованный значим пропускаем
@@ -65,7 +71,7 @@ public class StudentList {
                 _array[currentIndex] = USED;
                 return;
             }
-            currentIndex = getNext(currentIndex);
+            currentIndex = hashFunction(hash + ++i);
             if (currentIndex == startIndex) {
                 System.out.println("Элемент не найден");
                 return;
@@ -78,7 +84,9 @@ public class StudentList {
     public boolean member(char[] name) {
         // Алгоритм:
         // Вычисляем индекс с помощью хеш функции
-        int startIndex = hashFunction(name);
+        int i = 0;
+        int hash = hash(name);
+        int startIndex = hashFunction(hash);
         int currentIndex = startIndex;
         // Идем пока не будет null обьект, если дойдем до конца возвращаем false
         // Если текущий элемент использованный значим пропускаем
@@ -90,7 +98,7 @@ public class StudentList {
             if (_array[currentIndex] != USED && compareNames(name, _array[currentIndex].name)) {
                 return true;
             }
-            currentIndex = getNext(currentIndex);
+            currentIndex = hashFunction(hash + ++i);
             if (currentIndex == startIndex) {
                 return false;
             }
@@ -102,7 +110,9 @@ public class StudentList {
     public Student get(char[] name) {
         // Алгоритм:
         // Вычисляем индекс с помощью хеш функции
-        int startIndex = hashFunction(name);
+        int i = 0;
+        int hash = hash(name);
+        int startIndex = hashFunction(hash);
         int currentIndex = startIndex;
         // Идем пока не будет null обьект, если дойдем до конца возвращаем null
         // Если текущий элемент использованный значим пропускаем
@@ -113,7 +123,7 @@ public class StudentList {
             if (_array[currentIndex] != USED && compareNames(name, _array[currentIndex].name)) {
                 return _array[currentIndex];
             }
-            currentIndex = getNext(currentIndex);
+            currentIndex = hashFunction(hash + ++i);
             if (currentIndex == startIndex) {
                 return null;
             }
@@ -131,20 +141,21 @@ public class StudentList {
     }
 
 
+
     // Хеш-функция результат которой вернет нужный индекс в массиве
-    private int hashFunction(char[] name) {
-        char sum = 0;
+    private int hashFunction(int hash) {
+        return  hash % _array.length;
+    }
+
+    private static int hash(char[] name) {
+        int sum = 0;
         // Пробегаемся по массиву char
         for (int i = 0; i < name.length; i++) {
             sum += name[i];
         }
-        return sum % _array.length;
+        return sum;
     }
 
-    // Метод для определения следущего элемента в массиве
-    private int getNext(int i) {
-        return (i + 1) % _array.length;
-    }
 
     // Метод для сравнения имен, рассчитываем на то что передаются имена одной длины
     private boolean compareNames(char[] name1, char[] name2) {

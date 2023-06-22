@@ -17,41 +17,45 @@ public class CourseList {
         // Начинаем искать первую свободную позицию для вставки
         // Проверяем есть ли уже такой элемент, если есть выходим
         // Вставляем в свободную позицию
-
+        int i = 0;
         int startIndex = hashFunction(id);
         int currentIndex = startIndex;
+        int saveInput = -1;
         // Идем пока не найдем первый Null
-        // Проверят не сделали ли мы целый оборот (сравниваем текущий индекс с начальным), если да то место для вставки нет, выбросить исключение
+        // Проверяем не сделали ли мы целый оборот (сравниваем текущий индекс с начальным), если да то место для вставки нет, выбросить исключение
         while (_array[currentIndex] != null) {
             // Если есть такой элемент уже есть то выйти
-            if(_array[currentIndex].id == id) return;
-            // Если текущий индекс использованный, тогда сохраняем положения
-            // Дальше нам нужно убедиться, что такого элемента уже нет в списке
-            // Проверяем на этот элемент, пока не встретим ни разу не использовавашиеся или список закончиться
-            // И только после этого вставляем его в сохраненную USED позцию
-            if(_array[currentIndex] == USED) {
-                int saveInput = currentIndex;
-                while (_array[currentIndex] != null) {
-                    if(_array[currentIndex].id == id) return;
-                    currentIndex = getNext(currentIndex);
-                    if (currentIndex == startIndex) {
-                        break;
-                    }
-                }
-                _array[saveInput] = new Course(id);
+            if (_array[currentIndex].id == id) {
+                System.out.println("Уже в списке");
                 return;
             }
-            currentIndex = getNext(currentIndex);
-            if (currentIndex == startIndex) throw new RuntimeException("Невозможно добавить еще элементов!");
+            // Если текущий индекс использованный, тогда сохраняем положения
+            // Дальше нам нужно убедиться, что такого элемента уже нет в списке
+            // Проверяем на этот элемент, пока не встретим ни разу не использовававшиеся или список закончиться
+            // И только после этого вставляем его в сохраненную USED позицию
+            if (saveInput == -1 && _array[currentIndex] == USED) {
+                saveInput = currentIndex;
+            }
+            // Используем getNext, что сделать полный оборот
+            currentIndex = hashFunction(id + ++i);
+            if (currentIndex == startIndex) {
+                if (saveInput != -1) {
+                    _array[saveInput] = new Course(id);
+                    return;
+                }
+                throw new RuntimeException("Невозможно добавить еще элементов!");
+            }
+
         }
 
-        _array[currentIndex] = new Course(id);
+        _array[saveInput == -1 ? currentIndex : saveInput] = new Course(id);
     }
 
     // Метод для удаления значения из словаря
     public void delete(int id) {
         // Алгоритм:
         // Вычисляем индекс с помощью хеш функции
+        int i = 0;
         int startIndex = hashFunction(id);
         int currentIndex = startIndex;
         // Идем пока не будет null обьект
@@ -64,7 +68,7 @@ public class CourseList {
                 _array[currentIndex] = USED;
                 return;
             }
-            currentIndex = getNext(currentIndex);
+            currentIndex = hashFunction(id + ++i);
             if (currentIndex == startIndex) {
                 System.out.println("Элемент не найден");
                 return;
@@ -77,6 +81,7 @@ public class CourseList {
     public boolean member(int id) {
         // Алгоритм:
         // Вычисляем индекс с помощью хеш функции
+        int i = 0;
         int startIndex = hashFunction(id);
         int currentIndex = startIndex;
         // Идем пока не будет null обьект, если дойдем до конца возвращаем false
@@ -89,7 +94,7 @@ public class CourseList {
             if (_array[currentIndex] != USED && _array[currentIndex].id == id) {
                 return true;
             }
-            currentIndex = getNext(currentIndex);
+            currentIndex = hashFunction(id + ++i);
             if (currentIndex == startIndex) {
                 return false;
             }
@@ -101,6 +106,7 @@ public class CourseList {
     public Course get(int id) {
         // Алгоритм:
         // Вычисляем индекс с помощью хеш функции
+        int i = 0;
         int startIndex = hashFunction(id);
         int currentIndex = startIndex;
         // Идем пока не будет null обьект, если дойдем до конца возвращаем null
@@ -112,7 +118,7 @@ public class CourseList {
             if (_array[currentIndex] != USED && _array[currentIndex].id == id) {
                 return _array[currentIndex];
             }
-            currentIndex = getNext(currentIndex);
+            currentIndex = hashFunction(id + ++i);
             if (currentIndex == startIndex) {
                 return null;
             }
@@ -128,11 +134,9 @@ public class CourseList {
         }
     }
 
-
-
     // Хеш-функция результат которой вернет нужный индекс в массиве
-    private int hashFunction(int courseNumber) {
-        return courseNumber % _array.length;
+    private int hashFunction(int hash) {
+        return hash % _array.length;
     }
 
     // Метод для определения следущего элемента в массиве

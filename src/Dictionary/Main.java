@@ -1,6 +1,6 @@
 package Dictionary;
 
-import Dictionary.Open.Dictionary;
+import Dictionary.Close.Dictionary;
 
 import java.io.FileReader;
 import java.io.IOException;
