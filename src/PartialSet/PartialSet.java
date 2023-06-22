@@ -97,9 +97,11 @@ public class PartialSet {
             }
             else {
                 current.next = removeNode;
+                current = current.next;
             }
 
         }
+        System.out.println("Head Null");;
         // Назначаем новое значение голове
         _head = newHead;
     }
