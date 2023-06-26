@@ -56,20 +56,24 @@ public class Set {
             Node previous = unionSet.findValueLocation(unionCurrent, setCurrent.value);
             if (previous.next.value == setCurrent.value) {
                 unionCurrent = previous;
-            } else if (previous.next.value < setCurrent.value) {
-                // Если дошли до конца просто копируем оставшиеся элементы
-                while (setCurrent != set._tail) {
-                    Node temp = unionSet._tail;
-                    unionSet._tail = new Node(setCurrent.value, unionSet._tail.next);
-                    temp.next = unionSet._tail;
-                    setCurrent = setCurrent.next;
-                }
+            } else if (previous.next == unionSet._tail) {
+                unionCurrent = previous;
                 break;
             } else {
                 previous.next = new Node(setCurrent.value, previous.next);
                 unionCurrent = previous.next;
             }
             setCurrent = setCurrent.next;
+        }
+
+        // Если дошли до конца просто копируем оставшиеся элементы
+        if(unionCurrent.next == unionSet._tail) {
+            while (setCurrent != set._tail) {
+                Node temp = unionSet._tail;
+                unionSet._tail = new Node(setCurrent.value, unionSet._tail.next);
+                temp.next = unionSet._tail;
+                setCurrent = setCurrent.next;
+            }
         }
 
         // Отдельно обработаем по такому же алгоритму хвост
@@ -113,7 +117,7 @@ public class Set {
                     temp.next = interSet._tail;
                 }
                 set1Current = previous;
-            } else if (previous.next.value < set2Current.value) {
+            } else if (previous.next == _tail) {
                 return interSet;
             } else {
                 set1Current = previous;
@@ -163,14 +167,13 @@ public class Set {
                     previous.next = previous.next.next;
                 }
                 differCurrent = previous;
-            } else if (previous.next.value < setCurrent.value) {
+            } else if (previous.next ==  differSet._tail) {
                 return differSet;
             } else {
                 differCurrent = previous;
             }
             setCurrent = setCurrent.next;
         }
-
         // Обработка хвоста по такому же алгоритму
         Node previous = differSet.findValueLocation(differCurrent, _tail.value);
         if (previous.next.value == setCurrent.value) {
@@ -182,7 +185,6 @@ public class Set {
                 previous.next = differSet._tail.next;
                 differSet._tail = previous;
             } else {
-
                 previous.next = previous.next.next;
             }
         }
@@ -204,19 +206,23 @@ public class Set {
         Node setCurrent = set._tail.next;
         while (setCurrent != set._tail) {
             Node previous = mergeSet.findValueLocation(mergeCurrent, setCurrent.value);
-             if (previous.next.value < setCurrent.value) {
-                while (setCurrent != set._tail) {
-                    Node temp = mergeSet._tail;
-                    mergeSet._tail = new Node(setCurrent.value, mergeSet._tail.next);
-                    temp.next = mergeSet._tail;
-                    setCurrent = setCurrent.next;
-                }
+             if (previous.next == mergeSet._tail) {
+                 mergeCurrent.next = previous;
                 break;
             } else {
                 previous.next = new Node(setCurrent.value, previous.next);
                 mergeCurrent = previous.next;
             }
             setCurrent = setCurrent.next;
+        }
+
+        if(mergeCurrent.next == mergeSet._tail) {
+            while (setCurrent != set._tail) {
+                Node temp = mergeSet._tail;
+                mergeSet._tail = new Node(setCurrent.value, mergeSet._tail.next);
+                temp.next = mergeSet._tail;
+                setCurrent = setCurrent.next;
+            }
         }
 
         // Обработка хвоста
@@ -235,6 +241,7 @@ public class Set {
 
     // Присваивает новое множество в исходное множество
     public void assign(Set set) {
+        if(set == this) return;
         if (set._tail == null) {
             _tail = null;
             return;
@@ -353,8 +360,8 @@ public class Set {
         while (set2Current != set._tail) {
             Node previous = findValueLocation(set1Current, set2Current.value);
             if (previous.next.value == set2Current.value) {
-                return true;
-            } else if (previous.next.value < set2Current.value) {
+               return true;
+            } else if (previous.next == _tail) {
                 return false;
             } else {
                 set1Current = previous;

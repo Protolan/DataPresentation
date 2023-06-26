@@ -102,13 +102,14 @@ public class Set {
 
         // Используем метод findValueLocation, чтобы пройтись по двум спискам
         // Если значения однинаковые добавляем новый элемент
-        while (firstCurrent != null && secondCurrent != null) {
-            if (firstCurrent.value < secondCurrent.value)
-                firstCurrent = findValueLocation(firstCurrent, secondCurrent.value).next;
-            else if (firstCurrent.value > secondCurrent.value)
-                secondCurrent = findValueLocation(secondCurrent, firstCurrent.value).next;
-            else {
-                // Проверяем инициализириовали ли мы голову
+        while (secondCurrent != null) {
+            Node foundValue = set.findValueLocation(firstCurrent, secondCurrent.value);
+            if(foundValue == null) {
+                secondCurrent = secondCurrent.next;
+                continue;
+            }
+            if(foundValue.next == null) return interSet;
+            if(foundValue.next.value == secondCurrent.value) {
                 if (interCurrent == null) {
                     interSet._head = new Node(firstCurrent.value, null);
                     interCurrent = interSet._head;
@@ -116,7 +117,7 @@ public class Set {
                     interCurrent.next = new Node(firstCurrent.value, null);
                     interCurrent = interCurrent.next;
                 }
-                firstCurrent = firstCurrent.next;
+                firstCurrent = foundValue.next.next;
                 secondCurrent = secondCurrent.next;
             }
         }
@@ -209,6 +210,7 @@ public class Set {
     // Присваивает новое множество
     // Необходимо скопировать ячейки то есть создать новые ноды
     public void assign(Set set) {
+        if(set == this) return;
         set._head = getNodeCopy(set._head);
     }
 
@@ -349,12 +351,14 @@ public class Set {
         }
         Node set1Current = _head;
         Node set2Current = set._head;
-        while (set1Current != null && set2Current != null) {
-            if (set1Current.value < set2Current.value) {
-                set1Current = findValueLocation(set1Current, set2Current.value).next;
-            } else if (set1Current.value > set2Current.value) {
-                set2Current = findValueLocation(set2Current, set1Current.value).next;
-            } else {
+        while (set2Current != null) {
+            Node foundValue = set.findValueLocation(set1Current, set2Current.value);
+            if(foundValue == null) {
+                set2Current = set2Current.next;
+                continue;
+            }
+            if(foundValue.next == null) return false;
+            if(foundValue.next.value == set2Current.value) {
                 return true;
             }
         }

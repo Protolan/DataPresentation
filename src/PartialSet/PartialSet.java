@@ -70,7 +70,7 @@ public class PartialSet {
     }
 
     // Метод для упорядочивания множества
-    public void sort() {
+    public boolean sort() {
         // Алгоритм:
         // Удаляем из списка все элементы с помощью метода pop
         // Формируем новый список в порядке получения удаленных элементов
@@ -87,6 +87,9 @@ public class PartialSet {
             }
             else {
                 Element previousToRemove = previousToRemove();
+                if(previousToRemove == null) {
+                    return false;
+                }
                 removeNode = previousToRemove.next;
                 previousToRemove.next = removeNode.next;
                 clearElement(removeNode);
@@ -104,6 +107,7 @@ public class PartialSet {
         System.out.println("Head Null");;
         // Назначаем новое значение голове
         _head = newHead;
+        return true;
     }
 
 

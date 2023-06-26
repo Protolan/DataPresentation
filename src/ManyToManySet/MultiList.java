@@ -53,11 +53,10 @@ public class MultiList {
         return resultName;
     }
 
-
     // Добавляем студента на курс
     public void addStudentCourse(char[] studentName, int courseId) {
-        Course course = getCourseByName(courseId);
-        Student student = getStudentByName(studentName);
+        Course course = _courseList.get(courseId);
+        Student student = _studentList.get(studentName);
         if(course == null || student == null) return;
         if(isStudentOnCourse(student, course)) return;
         // Если прошли полностью до курса, значит значение не было найдено, вставляем запись вначало студента и курса
@@ -68,8 +67,8 @@ public class MultiList {
 
     // Убираем студента с курса
     public void removeStudentCourse(char[] studentName, int courseId) {
-        Course course = getCourseByName(courseId);
-        Student student = getStudentByName(studentName);
+        Course course = _courseList.get(courseId);
+        Student student = _studentList.get(studentName);
         if(course == null || student == null) return;
         if(!isStudentOnCourse(student, course)) return;
         // Делаем обход со стороны студента, чтобы найти нужную мультссылку на студента
@@ -80,11 +79,10 @@ public class MultiList {
         DeleteStudentLink(previousStudentLink);
     }
 
-
     // Удалить студента со всех курсов
     public void removeStudent(char[] studentName) {
         // Проверяем есть ли такой студент
-        Student student = getStudentByName(studentName);
+        Student student = _studentList.get(studentName);
         if(student == null) return;
 
         // Теперь надо обойти все курсы студента и удалить у них связь с этим студентом
@@ -109,7 +107,7 @@ public class MultiList {
     // Удаляем все студентов с курса
     public void removeCourse(int courseId) {
         // Проверяем есть ли такой курс
-        Course course = getCourseByName(courseId);
+        Course course = _courseList.get(courseId);
         if(course == null) return;
         // Теперь надо обойти все курсы студента и удалить у них связь с этим студентом
         Link currentLink = course.link;
@@ -133,7 +131,7 @@ public class MultiList {
     // Выводит список студентов курса
     public void printStudentsOfCourse(int courseId) {
         // Проверяем есть ли такой набор значений
-        Course course = getCourseByName(courseId);
+        Course course = _courseList.get(courseId);
         if(course == null) return;
         // Если нет записей, значит нет студентов
         if (course.link.isConcrete()) {
@@ -161,7 +159,7 @@ public class MultiList {
     // Выводит список курсов студента
     public void printCoursesOfStudent(char[] studentName) {
         // Проверяем есть ли такой набор значений
-        Student student = getStudentByName(studentName);
+        Student student = _studentList.get(studentName);
         if(student == null) return;
         // Если нет записей, значит студен не записан не на один курс
         if (student.link.isConcrete()) {
@@ -188,7 +186,6 @@ public class MultiList {
     // Метод для поиска находится ли студент на курсе
     private boolean isStudentOnCourse(Student student, Course course) {
         if (course.link.isConcrete() || student.link.isConcrete()) {
-//            System.out.println("Студент " + student + " не записан на курс " + course.id + "!");
             return false;
         }
         Link currentLink = course.link;
@@ -205,7 +202,6 @@ public class MultiList {
             }
             currentLink = multiLink.courseLink;
         }
-//        System.out.println("Студент " + student + " не записан на курс " + course.id + "!");
         return false;
 
     }
@@ -253,6 +249,7 @@ public class MultiList {
         return previousCourseLink;
     }
 
+    // Метод для удаления ссылки на студента
     private static void DeleteStudentLink(Link previousStudentLink) {
         if (previousStudentLink.isConcrete()) {
             Student studentLink = (Student) previousStudentLink;
@@ -263,6 +260,7 @@ public class MultiList {
         }
     }
 
+    // Метод для удаления ссылки на курс
     private static void DeleteCourseLink(Link previousCourseLink) {
         if (previousCourseLink.isConcrete()) {
             Course courseConcreteLink = (Course) previousCourseLink;
@@ -273,19 +271,4 @@ public class MultiList {
         }
     }
 
-    private Student getStudentByName(char[] studentName) {
-        Student student = _studentList.get(studentName);
-        if (student == null) {
-            System.out.println("Cтудента + " + studentName + " не существует");
-        }
-        return student;
-    }
-
-    private Course getCourseByName(int courseId) {
-        Course course = _courseList.get(courseId);
-        if (course == null) {
-            System.out.println("Курса " + courseId + " не существует");
-        }
-        return course;
-    }
 }

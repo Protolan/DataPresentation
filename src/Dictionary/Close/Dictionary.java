@@ -128,7 +128,7 @@ public class Dictionary {
         }
         return sum;
     }
-    
+
 
     // Метод для сравнения имен, рассчитываем на то что передаются имена одной длины
     private boolean compareNames(char[] name1, char[] name2) {
@@ -169,6 +169,14 @@ public class Dictionary {
             clear[i] = name[i];
         }
         return clear;
+    }
+
+    private static char[] nameFactory(char[] names) {
+        char[] resultName = new char[10];
+        for (int i = 0; i < resultName.length; i++) {
+            resultName[i] = names[i];
+        }
+        return resultName;
     }
 
 
