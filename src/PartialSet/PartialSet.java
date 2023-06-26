@@ -8,7 +8,7 @@ public class PartialSet {
         public int count;
 
         public Element(int key, Element next) {
-            super(next);
+            super(next, null);
             this.key = key;
             count = 0;
         }
@@ -26,10 +26,6 @@ public class PartialSet {
             this.trail = next;
         }
 
-        protected Trail(Element id) {
-            this.next = id;
-            this.trail = null;
-        }
     }
 
     private Element _head;
@@ -57,6 +53,7 @@ public class PartialSet {
             }
             current = current.next;
         }
+
         if (lesEl == null) {
             _head = new Element(less, _head);
             lesEl = _head;
@@ -104,8 +101,7 @@ public class PartialSet {
             }
 
         }
-        System.out.println("Head Null");;
-        // Назначаем новое значение голове
+
         _head = newHead;
         return true;
     }

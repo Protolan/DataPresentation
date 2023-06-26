@@ -41,13 +41,9 @@ public class Dictionary {
             // Используем getNext, что сделать полный оборот
             currentIndex = hashFunction(hash + ++i);
             if (currentIndex == startIndex) {
-                if (saveInput != -1) {
-                    _array[saveInput] = name;
-                    return;
-                }
-                throw new RuntimeException("Невозможно добавить еще элементов!");
+                if (saveInput != -1) break;
+                else return;
             }
-
         }
 
         _array[saveInput == -1 ? currentIndex : saveInput] = name;

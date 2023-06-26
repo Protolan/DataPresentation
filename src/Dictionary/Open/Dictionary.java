@@ -1,14 +1,10 @@
 package Dictionary.Open;
 
 public class Dictionary {
-    private class Node {
+    private static class Node {
         char[] name;
         Node next;
 
-        public Node(char[] name, Node next) {
-            this.name = name;
-            this.next = next;
-        }
 
         public Node(char[] name) {
             this.name = name;
